@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+@property --conic-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root,
+[data-theme="obsidian"] {
+  --bg-primary: #070708;
+  --bg-elevated: #0d0d10;
+  --bg-panel: #121216;
+  --bg-glass: rgba(13, 13, 16, 0.78);
+  --fg-primary: #f2efe9;
+  --fg-secondary: #a29e95;
+  --fg-muted: #66635b;
+  --hairline: rgba(242, 239, 233, 0.11);
+  --hairline-strong: rgba(242, 239, 233, 0.26);
+  --accent: #ff4d00;
+  --accent-contrast: #070708;
+  --accent-soft: rgba(255, 77, 0, 0.13);
+  --signal-ok: #b8f335;
+  --signal-warn: #f59e0b;
+  --canvas-vignette: radial-gradient(circle at 68% 42%, rgba(255, 77, 0, 0.07), transparent 62%);
+  color-scheme: dark;
+}
+
+[data-theme="paper"] {
+  --bg-primary: #f2efe9;
+  --bg-elevated: #e8e4dc;
+  --bg-panel: #faf8f4;
+  --bg-glass: rgba(242, 239, 233, 0.84);
+  --fg-primary: #0b0b0d;
+  --fg-secondary: #45433d;
+  --fg-muted: #78746b;
+  --hairline: rgba(11, 11, 13, 0.13);
+  --hairline-strong: rgba(11, 11, 13, 0.30);
+  --accent: #d93b00;
+  --accent-contrast: #faf8f4;
+  --accent-soft: rgba(217, 59, 0, 0.10);
+  --signal-ok: #15803d;
+  --signal-warn: #b45309;
+  --canvas-vignette: radial-gradient(circle at 68% 42%, rgba(217, 59, 0, 0.06), transparent 62%);
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* Typography Primitives — Language-Aware Display Stack (Zero Diacritic Fallback) */
+.font-display {
+  font-family: "Syne", "Be Vietnam Pro", sans-serif;
+  letter-spacing: -0.035em;
+}
+
+html[lang="vi"] .font-display {
+  font-family: "Be Vietnam Pro", "Space Grotesk", sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.hero-headline {
+  font-size: clamp(1.58rem, 3.75vw, 3.55rem);
+  line-height: 0.99;
+}
+
+html[lang="vi"] .hero-headline {
+  font-size: clamp(1.75rem, 4.1vw, 3.85rem);
+  line-height: 1.08;
+}
+
+.font-serif-editorial {
+  font-family: "Instrument Serif", Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+.font-mono-tech {
+  font-family: "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Native CSS Scroll-Driven Top Progress Line (Compositor Thread) */
+@keyframes scroll-progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.scroll-progress-line {
+  transform-origin: 0% 50%;
+  background: var(--accent);
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress-line {
+    animation: scroll-progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+/* View Transitions API Circular Wipe Override */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Architectural Drafting Hairlines & Corner Registration Crosshairs */
+.hairline-b {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.hairline-t {
+  border-top: 1px solid var(--hairline);
+}
+
+.hairline-r {
+  border-right: 1px solid var(--hairline);
+}
+
+.hairline-l {
+  border-left: 1px solid var(--hairline);
+}
+
+.hairline-box {
+  border: 1px solid var(--hairline);
+}
+
+.crosshair-node {
+  position: relative;
+}
+
+.crosshair-node::before,
+.crosshair-node::after {
+  content: "+";
+  position: absolute;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--fg-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+.crosshair-node::before {
+  top: -6px;
+  left: -4px;
+}
+
+.crosshair-node::after {
+  bottom: -6px;
+  right: -4px;
+}
+
+/* Subtle Anisotropic Specular Sheen on Monograph Plates */
+.monograph-plate {
+  position: relative;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--hairline);
+  transition: background-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.monograph-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 260ms ease;
+  background: radial-gradient(
+    560px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    var(--accent-soft),
+    transparent 68%
+  );
+}
+
+.monograph-plate:hover::before {
+  opacity: 1;
+}
+
+/* Conic Active Signal Border */
+@keyframes rotate-conic {
+  to {
+    --conic-angle: 360deg;
+  }
+}
+
+.conic-signal-badge {
+  background:
+    linear-gradient(var(--bg-panel), var(--bg-panel)) padding-box,
+    conic-gradient(from var(--conic-angle), var(--hairline), var(--accent), var(--hairline)) border-box;
+  border: 1px solid transparent;
+  animation: rotate-conic 6s linear infinite;
+}
+
+/* Tactile Analog Film Grain Overlay */
+.grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
