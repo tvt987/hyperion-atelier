@@ -133,17 +133,18 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: 'Six Production Live Flagships (198+ CI Green)',
+    title: 'Eleven Production Live Web Apps (304+ CI Green)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
+      'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
     ],
-    metrics: ['6 Live Web Apps (v2–v3)', '198+ CI Tests Passing', '500K DuckDB-WASM Rows', 'WebGPU + Three.js PBR'],
-    keywords: ['Maison Véra v3.0', 'Atelier Canvas v3.0', 'Aether Acoustics v2.0', 'Nexus Lake v2.0', 'Verdict Graph v2.0', 'AegisPulse v2.0'],
+    metrics: ['11 Live Web Apps', '304+ CI Tests Passing', 'TVT Studio Storefront', 'WebGPU + Three.js PBR'],
+    keywords: ['TVT Studio', 'Maison Véra v3.0', 'Atelier Canvas v3.0', 'Lumina MedSpa', 'Kinetix PropTech', 'PulsePOS F&B'],
     actions: [
-      { label: 'Maison Véra v3.0 ↗', href: 'https://tvt987.github.io/maison-vera/', accent: true },
-      { label: 'Atelier Canvas v3.0 ↗', href: 'https://tvt987.github.io/atelier-canvas/' },
-      { label: 'Nexus Lake ↗', href: 'https://tvt987.github.io/nexus-lake/' },
+      { label: 'TVT Studio Store ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
+      { label: 'Maison Véra v3.0 ↗', href: 'https://tvt987.github.io/maison-vera/' },
+      { label: 'PulsePOS F&B ↗', href: 'https://tvt987.github.io/pulse-pos-fnb/' },
     ],
   },
 ];
@@ -316,7 +317,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 6 live production apps (198+ CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 11 live production apps (304+ CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,

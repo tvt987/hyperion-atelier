@@ -11,8 +11,12 @@ interface FlagshipDockProps {
 }
 
 const MONOGRAMS: Record<string, string> = {
+  'tvt-studio': 'TVT',
   'maison-vera': 'MV',
   'atelier-canvas': 'AC',
+  'lumina-medspa': 'LM',
+  'kinetix-proptech': 'KX',
+  'pulse-pos-fnb': 'POS',
   'aether-acoustics': 'AE',
   'nexus-lake': 'NL',
   'verdict-graph': 'VG',

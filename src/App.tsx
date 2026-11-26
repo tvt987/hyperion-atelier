@@ -471,6 +471,14 @@ export function App() {
           </a>
 
           <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-[var(--fg-secondary)]">
+            <a
+              href="https://tvt987.github.io/tvt-studio/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[var(--accent)] font-semibold hover:opacity-80 transition cursor-pointer"
+            >
+              <GlyphDecodeText text={lang === 'vi' ? 'Mua Web / Thuê Code ↗' : 'Web Store ↗'} />
+            </a>
             <button
               type="button"
               onClick={() => scrollToSection('sec-works')}
@@ -747,8 +755,17 @@ export function App() {
                   style={{ backgroundColor: 'var(--fg-primary)', color: 'var(--bg-primary)' }}
                   className="px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide hover:opacity-90 transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 6 Dự Án Live ↓' : 'Selected Works ↓'} />
+                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 10 Dự Án Live ↓' : 'Selected Works ↓'} />
                 </button>
+                <a
+                  href="https://tvt987.github.io/tvt-studio/"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ borderColor: 'var(--accent)', backgroundColor: 'var(--accent-soft)' }}
+                  className="px-5 py-3 rounded-full border text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:opacity-90 transition cursor-pointer"
+                >
+                  <GlyphDecodeText text={lang === 'vi' ? 'Đặt Làm Web / Kho Mẫu ↗' : 'Order Web / Store ↗'} />
+                </a>
                 <button
                   type="button"
                   onClick={() => {
@@ -788,7 +805,7 @@ export function App() {
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
               { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
               { value: '0.00%', labelEn: 'Double-Spend Leaks', labelVi: 'Lỗi Âm Kho' },
-              { value: '198+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
+              { value: '304+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
             ].map((m) => (
               <div
                 key={m.value}
