@@ -1,47 +1,41 @@
 @import "tailwindcss";
 
-@property --conic-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
 :root,
 [data-theme="obsidian"] {
-  --bg-primary: #070708;
-  --bg-elevated: #0d0d10;
-  --bg-panel: #121216;
-  --bg-glass: rgba(13, 13, 16, 0.78);
-  --fg-primary: #f2efe9;
-  --fg-secondary: #a29e95;
-  --fg-muted: #66635b;
-  --hairline: rgba(242, 239, 233, 0.11);
-  --hairline-strong: rgba(242, 239, 233, 0.26);
+  --bg-primary: #060608;
+  --bg-elevated: #0c0d11;
+  --bg-panel: #12141a;
+  --bg-glass: rgba(12, 13, 17, 0.76);
+  --fg-primary: #f5f4f0;
+  --fg-secondary: #9c9ca6;
+  --fg-muted: #5d5f6b;
+  --hairline: rgba(255, 255, 255, 0.085);
+  --hairline-strong: rgba(255, 255, 255, 0.2);
   --accent: #ff4d00;
-  --accent-contrast: #070708;
-  --accent-soft: rgba(255, 77, 0, 0.13);
-  --signal-ok: #b8f335;
+  --accent-contrast: #060608;
+  --accent-soft: rgba(255, 77, 0, 0.14);
+  --signal-ok: #22c55e;
   --signal-warn: #f59e0b;
-  --canvas-vignette: radial-gradient(circle at 68% 42%, rgba(255, 77, 0, 0.07), transparent 62%);
+  --card-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.72);
   color-scheme: dark;
 }
 
 [data-theme="paper"] {
-  --bg-primary: #f2efe9;
-  --bg-elevated: #e8e4dc;
-  --bg-panel: #faf8f4;
-  --bg-glass: rgba(242, 239, 233, 0.84);
-  --fg-primary: #0b0b0d;
-  --fg-secondary: #45433d;
-  --fg-muted: #78746b;
-  --hairline: rgba(11, 11, 13, 0.13);
-  --hairline-strong: rgba(11, 11, 13, 0.30);
+  --bg-primary: #f6f4ef;
+  --bg-elevated: #ffffff;
+  --bg-panel: #eeebe4;
+  --bg-glass: rgba(246, 244, 239, 0.82);
+  --fg-primary: #0c0d10;
+  --fg-secondary: #4e4f57;
+  --fg-muted: #82838c;
+  --hairline: rgba(12, 13, 16, 0.09);
+  --hairline-strong: rgba(12, 13, 16, 0.22);
   --accent: #d93b00;
-  --accent-contrast: #faf8f4;
-  --accent-soft: rgba(217, 59, 0, 0.10);
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(217, 59, 0, 0.09);
   --signal-ok: #15803d;
   --signal-warn: #b45309;
-  --canvas-vignette: radial-gradient(circle at 68% 42%, rgba(217, 59, 0, 0.06), transparent 62%);
+  --card-shadow: 0 22px 50px -24px rgba(12, 13, 16, 0.16);
   color-scheme: light;
 }
 
@@ -54,7 +48,7 @@
 html {
   background-color: var(--bg-primary);
   color: var(--fg-primary);
-  font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Space Grotesk", "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, sans-serif;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -73,10 +67,9 @@ body {
   color: #ffffff;
 }
 
-/* Typography Primitives — Language-Aware Display Stack (Zero Diacritic Fallback) */
 .font-display {
   font-family: "Syne", "Be Vietnam Pro", sans-serif;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.04em;
 }
 
 html[lang="vi"] .font-display {
@@ -85,26 +78,26 @@ html[lang="vi"] .font-display {
 }
 
 .hero-headline {
-  font-size: clamp(1.58rem, 3.75vw, 3.55rem);
-  line-height: 0.99;
+  font-size: clamp(2.65rem, 6.2vw, 5.4rem);
+  line-height: 0.96;
 }
 
 html[lang="vi"] .hero-headline {
-  font-size: clamp(1.75rem, 4.1vw, 3.85rem);
-  line-height: 1.08;
+  font-size: clamp(2.35rem, 5.4vw, 4.7rem);
+  line-height: 1.06;
 }
 
 .font-serif-editorial {
   font-family: "Instrument Serif", Georgia, serif;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .font-mono-tech {
   font-family: "JetBrains Mono", monospace;
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Native CSS Scroll-Driven Top Progress Line (Compositor Thread) */
+/* Native Scroll Progress Hairline */
 @keyframes scroll-progress-grow {
   from {
     transform: scaleX(0);
@@ -126,7 +119,7 @@ html[lang="vi"] .hero-headline {
   }
 }
 
-/* View Transitions API Circular Wipe Override */
+/* View Transitions Circular Wipe */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -141,7 +134,7 @@ html[lang="vi"] .hero-headline {
   z-index: 9999;
 }
 
-/* Architectural Drafting Hairlines & Corner Registration Crosshairs */
+/* Minimalist Hairline Utilities (kept for Lab & Modals) */
 .hairline-b {
   border-bottom: 1px solid var(--hairline);
 }
@@ -162,80 +155,65 @@ html[lang="vi"] .hero-headline {
   border: 1px solid var(--hairline);
 }
 
-.crosshair-node {
-  position: relative;
-}
-
-.crosshair-node::before,
-.crosshair-node::after {
-  content: "+";
-  position: absolute;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  line-height: 1;
-  color: var(--fg-muted);
-  pointer-events: none;
-  user-select: none;
-}
-
-.crosshair-node::before {
-  top: -6px;
-  left: -4px;
-}
-
-.crosshair-node::after {
-  bottom: -6px;
-  right: -4px;
-}
-
-/* Subtle Anisotropic Specular Sheen on Monograph Plates */
-.monograph-plate {
+/* Flagship Visual Gallery Card */
+.flagship-card {
   position: relative;
   background: var(--bg-elevated);
-  border-bottom: 1px solid var(--hairline);
-  transition: background-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  overflow: hidden;
+  transition:
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 280ms ease,
+    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.monograph-plate::before {
+.flagship-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--hairline-strong);
+  box-shadow: var(--card-shadow);
+}
+
+.flagship-card::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 260ms ease;
+  transition: opacity 320ms ease;
   background: radial-gradient(
-    560px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    460px circle at var(--spot-x, 50%) var(--spot-y, 35%),
     var(--accent-soft),
-    transparent 68%
+    transparent 65%
   );
 }
 
-.monograph-plate:hover::before {
+.flagship-card:hover::after {
   opacity: 1;
 }
 
-/* Conic Active Signal Border */
-@keyframes rotate-conic {
-  to {
-    --conic-angle: 360deg;
-  }
+.flagship-card .card-media {
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.conic-signal-badge {
+.flagship-card:hover .card-media {
+  transform: scale(1.035);
+}
+
+/* Subtle Atmospheric Backdrop Glow */
+.hero-ambient {
   background:
-    linear-gradient(var(--bg-panel), var(--bg-panel)) padding-box,
-    conic-gradient(from var(--conic-angle), var(--hairline), var(--accent), var(--hairline)) border-box;
-  border: 1px solid transparent;
-  animation: rotate-conic 6s linear infinite;
+    radial-gradient(640px circle at 76% 36%, var(--accent-soft), transparent 62%),
+    radial-gradient(520px circle at 18% 72%, rgba(99, 102, 241, 0.06), transparent 60%);
 }
 
-/* Tactile Analog Film Grain Overlay */
+/* Tactile Analog Film Grain (very subtle) */
 .grain-overlay {
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 60;
-  opacity: 0.028;
+  opacity: 0.022;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -251,6 +229,7 @@ html[lang="vi"] .hero-headline {
 
 ::-webkit-scrollbar-thumb {
   background: var(--hairline-strong);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

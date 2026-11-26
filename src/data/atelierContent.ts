@@ -1,259 +1,202 @@
-export interface MonographPlateItem {
-  plateNo: string;
-  year: string;
-  domainTag: string;
+export type WorkCategory = 'all' | 'commerce' | 'design' | 'ai' | 'systems';
+
+export interface FlagshipWorkItem {
+  id: string;
+  index: string;
   title: string;
-  subtitleEn: string;
-  subtitleVi: string;
-  summaryEn: string;
-  summaryVi: string;
-  metrics: Array<{ label: string; value: string }>;
-  stack: string[];
-  liveUrl?: string;
+  version: string;
+  category: Exclude<WorkCategory, 'all'>;
+  taglineEn: string;
+  taglineVi: string;
+  previewImage: string;
+  highlightMetric: string;
+  ciBadge: string;
+  keywords: string[];
+  liveUrl: string;
   repoUrl: string;
-  ciProof: string;
-  topologyNodes: [string, string, string, string];
 }
 
-export const MONOGRAPH_PLATES: MonographPlateItem[] = [
+export const FLAGSHIP_WORKS: FlagshipWorkItem[] = [
   {
-    plateNo: 'PLATE 01',
-    year: '2026',
-    domainTag: 'POLYGLOT DISTRIBUTED KERNEL & AGENTIC SRE',
-    title: 'AegisPulse — High-Concurrency Kernel & Hybrid-RAG Control Plane',
-    subtitleEn: 'C# .NET 10 Minimal API + Python 3.12 FastAPI Hybrid RAG + React 19 Telemetry Cockpit',
-    subtitleVi: 'Nhân giao dịch tải cao C# .NET 10 + Agentic SRE Hybrid RAG Python 3.12 + Buồng lái React 19',
-    summaryEn:
-      'Unifies a lock-free atomic quota & RowVersion Compare-And-Swap engine (139,099 RPS, 0 oversold units across 10,000-request flash-sale bursts, SHA-256 Idempotency-Key 409 guard, W3C traceparent waterfall) with an Okapi BM25 + 384-d Dense Vector RRF (k=60) SRE Co-Pilot achieving 100% Recall@1 and 100% out-of-domain abstention precision.',
-    summaryVi:
-      'Hợp nhất nhân kiểm soát hạn ngạch phi khóa & RowVersion CAS (139.099 RPS, 0 rò rỉ âm kho trước đợt bão 10.000 truy vấn đồng thời, chống trùng SHA-256 Idempotency-Key 409, thác vết W3C OpenTelemetry) cùng trợ lý SRE tự hành kết hợp BM25 + Vector 384 chiều RRF (k=60) đạt 100% Recall@1 và chặn 100% ảo giác ngoài miền.',
-    metrics: [
-      { label: 'PEAK THROUGHPUT', value: '139,099 RPS' },
-      { label: 'DOUBLE-SPEND LEAKS', value: '0 / 10,000' },
-      { label: 'RAG RECALL@1 / OOD', value: '100% / 100%' },
-    ],
-    stack: ['.NET 10', 'C# Channel<T>', 'Python 3.12', 'FastAPI', 'BM25 + RRF', 'OpenTelemetry', 'React 19'],
-    liveUrl: 'https://tvt987.github.io/aegispulse-distributed-sre/',
-    repoUrl: 'https://github.com/tvt987/aegispulse-distributed-sre',
-    ciProof: '18/18 .NET xUnit + Pytest + Vitest PASS (GitHub Actions)',
-    topologyNodes: ['HTTP/2 Burst', 'SHA-256 Idem 409', 'Atomic CAS / WAL', 'BM25+384d RRF'],
-  },
-  {
-    plateNo: 'PLATE 02',
-    year: '2026',
-    domainTag: 'LOCAL-FIRST OLAP LAKEHOUSE & MCP BI WORKBENCH',
-    title: 'Nexus Lake — Collaborative DuckDB-WASM Lakehouse & WebGPU Workbench',
-    subtitleEn: 'Self-Hosted DuckDB-WASM + Apache Arrow + Yjs CRDT Multiplayer + WGSL Compute + Real TypeScript MCP Server',
-    subtitleVi: 'Kho dữ liệu SQL tại trình duyệt DuckDB-WASM + Yjs CRDT đa người dùng + WebGPU WGSL + MCP Server thật',
-    summaryEn:
-      'Zero-server thick-client analytics studio scanning 100K–500K Apache Arrow rows inside browser Web Workers via DuckDB-WASM, paired with lossless Yjs CRDT offline partition/merge labs, inspectable WGSL WebGPU scatter shaders, AG-UI generative BI widgets, 128-d IndexedDB semantic catalog search, and a standalone AST-guarded TypeScript MCP Server.',
-    summaryVi:
-      'Nền tảng phân tích OLAP không cần máy chủ truy vấn trực tiếp 100K–500K dòng Apache Arrow bằng DuckDB-WASM, tích hợp cộng tác không xung đột Yjs CRDT ngoại tuyến, biểu đồ dị thường WebGPU WGSL, trợ lý Generative BI chuẩn AG-UI và gói TypeScript MCP Server chặn ghi SQL bằng AST.',
-    metrics: [
-      { label: 'CLIENT-SIDE OLAP', value: '100K–500K ROWS' },
-      { label: 'CRDT MERGE DELTA', value: '166 BYTES' },
-      { label: 'CI SUITE (MCP+WEB)', value: '22 / 22 PASS' },
-    ],
-    stack: ['DuckDB-WASM', 'Apache Arrow', 'Yjs CRDT', 'WebGPU WGSL', 'AG-UI', 'MCP Server TS', 'React 19'],
-    liveUrl: 'https://tvt987.github.io/nexus-lake/',
-    repoUrl: 'https://github.com/tvt987/nexus-lake',
-    ciProof: '22/22 MCP Server + Web Vitest PASS (GitHub Actions)',
-    topologyNodes: ['Arrow IPC 500K', 'DuckDB-WASM SQL', 'Yjs CRDT Sync', 'WGSL + MCP/AG-UI'],
-  },
-  {
-    plateNo: 'PLATE 03',
-    year: '2026',
-    domainTag: 'AGENTIC PROTOCOL CONTROL PLANE & TIME-TRAVEL DEBUGGER',
-    title: 'Verdict Graph — Visual Multi-Agent Orchestrator & Protocol Debugger',
-    subtitleEn: 'MCP JSON-RPC 2.0 + A2A AgentCards + AG-UI SSE + Immutable LangGraph Checkpointer + OpenTelemetry GenAI',
-    subtitleVi: 'Trung tâm điều phối đa tác tử chuẩn MCP × A2A × AG-UI + Tua ngược Time-Travel Checkpoint + Thác vết OTel GenAI',
-    summaryEn:
-      'Polyglot FastAPI + React 19 multi-agent mission control featuring a cyclic 6-node execution DAG, real Human-in-the-Loop approval interrupts, indirect prompt-injection blocking (INJ-EXFIL-001), immutable checkpoint branching with side-by-side FinOps diff (+0.38 groundedness at -52% cost), and live MCP/A2A/AG-UI/OTel wire inspectors.',
-    summaryVi:
-      'Hệ thống điều khiển đa tác tử AI song runtime (FastAPI + React 19) sở hữu đồ thị thực thi có chu trình 6 nút, chốt duyệt Human-in-the-Loop, lá chắn chặn prompt injection (INJ-EXFIL-001), tách nhánh tua ngược checkpoint so sánh chi phí/độ trung thực và bộ soi gói tin MCP/A2A/AG-UI/OTel trực tiếp.',
-    metrics: [
-      { label: 'FORK GROUNDEDNESS', value: '0.61 -> 0.99' },
-      { label: 'TOKEN COST DELTA', value: '-52.2% USD' },
-      { label: 'POLYGLOT CI SUITE', value: '27 / 27 PASS' },
-    ],
-    stack: ['Python 3.12', 'FastAPI', 'LangGraph Pattern', 'MCP 2.0', 'A2A Protocol', 'AG-UI SSE', 'OTel GenAI'],
-    liveUrl: 'https://tvt987.github.io/verdict-graph/',
-    repoUrl: 'https://github.com/tvt987/verdict-graph',
-    ciProof: '27/27 Python Pytest + Vitest PASS (GitHub Actions)',
-    topologyNodes: ['Cyclic 6-Node DAG', 'MCP & A2A Wire', 'HITL & Guardrail', 'Time-Travel Fork'],
-  },
-  {
-    plateNo: 'PLATE 04',
-    year: '2026',
-    domainTag: 'LUXURY 3D E-COMMERCE & REAL-TIME SPATIAL AUDIO',
-    title: 'Aether Acoustics — 3D PBR Hardware Flagship & Spatial DSP Store',
-    subtitleEn: 'Three.js RoomEnvironment PBR 3D Configurator + Scroll Exploded Anatomy + Web Audio DSP + Idempotent Checkout',
-    subtitleVi: 'Cửa hàng âm thanh cao cấp 3D PBR thời gian thực + Giải phẫu linh kiện theo cuộn + Phòng nghe DSP + Thanh toán Idempotent',
-    summaryEn:
-      'Awwwards-grade commercial flagship store combining a procedural 5-layer CNC aluminum 3D monolith configurator (4 PBR finishes, scroll-choreographed exploded view via Lenis + GSAP), real-time Web Audio API Biquad/Convolver spatial audition lab, 6-SKU industrial catalog, idempotent promo voucher engine, and 3-step checkout with 3D metallic card & authenticity certificate.',
-    summaryVi:
-      'Website thương mại điện tử cao cấp tích hợp bộ tùy biến loa 3D PBR 5 lớp CNC thời gian thực (4 vật liệu kim loại, tách lớp theo nhịp cuộn Lenis + GSAP), phòng nghe thử Web Audio API DSP 60fps, danh mục 6 thiết bị vẽ đồ họa công nghiệp, nhân voucher chống trùng và quy trình checkout thẻ kim loại 3D xuất chứng nhận số.',
-    metrics: [
-      { label: '3D PBR ANATOMY', value: '5 KINEMATIC LAYERS' },
-      { label: 'SPATIAL AUDIO LAB', value: '3 LIVE DSP MODES' },
-      { label: 'COMMERCE CI SUITE', value: '17 / 17 PASS' },
-    ],
-    stack: ['React 19', 'Three.js PBR', 'Lenis + GSAP', 'Web Audio DSP', 'View Transitions', 'Zod', 'Vitest'],
-    liveUrl: 'https://tvt987.github.io/aether-acoustics/',
-    repoUrl: 'https://github.com/tvt987/aether-acoustics',
-    ciProof: '17/17 Cart, Voucher & Checkout Vitest PASS (GitHub Actions)',
-    topologyNodes: ['Three.js PBR 3D', 'Web Audio DSP', 'Idempotent Voucher', '3D Card + Cert'],
-  },
-  {
-    plateNo: 'PLATE 05',
-    year: '2026',
-    domainTag: 'MULTI-ARTBOARD DESIGN, PHOTO GRADING & 3D STACK ENGINE v3.0',
-    title: 'Atelier Canvas v3.0 — Production Browser Figma Pro × Framer Studio',
-    subtitleEn: 'Multi-Artboard Screen Flows + Real Photo Layers & GPU Grading + Isometric 3D Stack Explode + Alt-Measure + .atelier.json',
-    subtitleVi: 'Phần mềm thiết kế chuẩn sản phẩm: Multi-Artboard nối chuyển màn hình + Tầng ảnh thật & Chỉnh màu GPU + 3D Stack tách tầng Z-Index + Alt-Measure',
-    summaryEn:
-      'Production browser design & prototyping engine featuring multi-artboard screen-to-screen flows (MacBook/iPhone Player), drag-and-drop real photo layers with live GPU color grading, isometric 3D Z-Depth Stack Explode orbit view, Figma Alt-hover spacing redlines, multi-select group drag, Bezier Pen, Auto-Layout, WCAG 2.1 AAA auto-fix, local auto-save & .atelier.json Save/Open, and Framer Motion / HTML / SVG / 3x PNG export.',
-    summaryVi:
-      'Công cụ thiết kế đa màn hình ngay trên trình duyệt với luồng chuyển màn hình Prototype thật (khung MacBook/iPhone), tầng ảnh chụp thật kéo-thả kèm bộ lọc màu GPU, góc nhìn 3D Stack tách tầng Z-Index xoay trực tiếp, giữ Alt đo khoảng cách chuẩn Figma, kéo nhóm đa chọn, bút Bezier, Auto-Layout, kiểm toán WCAG AAA, lưu/mở file .atelier.json và xuất Framer Motion / HTML / SVG / PNG 3×.',
-    metrics: [
-      { label: 'PRO ARCHITECTURE', value: 'MULTI-SCREEN · 3D STACK' },
-      { label: 'MEDIA & PERSIST', value: 'GPU PHOTO · .ATELIER.JSON' },
-      { label: 'STUDIO CI SUITE', value: '18 / 18 PASS' },
-    ],
-    stack: ['React 19', 'TypeScript', 'Multi-Artboard', 'GPU Photo Grade', '3D Stack', 'Yjs CRDT', 'WCAG AAA'],
-    liveUrl: 'https://tvt987.github.io/atelier-canvas/',
-    repoUrl: 'https://github.com/tvt987/atelier-canvas',
-    ciProof: '18/18 Multi-Artboard, Photo Grade, Alt-Measure & Yjs CI PASS',
-    topologyNodes: ['Multi-Screen Flows', 'GPU Photo Layers', '3D Z-Depth Stack', 'Motion TSX / JSON'],
-  },
-  {
-    plateNo: 'PLATE 06',
-    year: '2026',
-    domainTag: 'PHOTOREALISTIC LUXURY E-COMMERCE & 3D STUDIO HOUSE v3.0',
-    title: 'Maison Véra v3.0 — Hasselblad Editorial & Refractive 3D Flagship',
-    subtitleEn: '16 Bespoke Studio & Paris Campaign Photos + Campaign ↔ 3D Exploded CAD + 2.2x Photo Loupe + AI Stylist (-12%)',
-    subtitleVi: 'Cửa hàng cao cấp 16 ảnh chụp Studio Hasselblad thật + Hero Campaign ↔ 3D Tách Lớp + Kính lúp soi ảnh 2.2× + AI Stylist (-12%)',
-    summaryEn:
-      'Authentic Parisian luxury storefront showcasing 16 cohesive medium-format .webp studio & lookbook photographs (536 KB total), dual Campaign Photo ↔ Interactive Refractive 3D Exploded Titanium CAD hero, real-photo 2.2x optical loupe, 24K Foil Monogram stamping through Invoice, AI Atelier Stylist (-12%), Verified Collector Reviews, Global Boutique Stock, Private Vault (PRIVATE10), and live USD/VND + EN/VI.',
-    summaryVi:
-      'Cửa hàng thương mại điện tử xa xỉ phong cách Paris với trọn bộ 16 ảnh chụp Studio & Lookbook thật định dạng .webp siêu nhẹ, Hero chuyển đổi mượt giữa Ảnh Campaign và mô hình kính 3D tách lớp khúc xạ, kính lúp 2.2× soi vân vải/titan thật, khắc Monogram ép kim 24K, AI Stylist (-12%), Đánh giá khách hàng & Kho Boutique toàn cầu và Private Vault.',
-    metrics: [
-      { label: 'BESPOKE MEDIA', value: '16 REAL .WEBP · 536 KB' },
-      { label: 'EXPERIENCE SUITE', value: '3D CAD · LOUPE · STYLIST' },
-      { label: 'COMMERCE CI SUITE', value: '33 / 33 PASS' },
-    ],
-    stack: ['React 19', 'Three.js Physical', '16 Studio WebP', 'Lenis + GSAP', 'AI Stylist', 'Zod', 'Vitest'],
+    id: 'maison-vera',
+    index: '01',
+    title: 'Maison Véra',
+    version: 'v3.0',
+    category: 'commerce',
+    taglineEn: 'Photorealistic Luxury E-Commerce & 3D Titanium CAD',
+    taglineVi: 'Thương Mại Điện Tử Xa Xỉ & Kính 3D Tách Lớp',
+    previewImage: 'previews/maison-vera.webp',
+    highlightMetric: '16 Studio WebP · 3D Exploded',
+    ciBadge: '33/33 CI',
+    keywords: ['Three.js PBR', 'AI Stylist -12%', '2.2x Loupe', '24K Monogram', 'USD / VND'],
     liveUrl: 'https://tvt987.github.io/maison-vera/',
     repoUrl: 'https://github.com/tvt987/maison-vera',
-    ciProof: '33/33 Media, Vault, Stylist, Compare & Checkout CI PASS',
-    topologyNodes: ['16 Hasselblad WebP', 'Campaign ↔ 3D CAD', '2.2x Real Loupe', 'Reviews & Checkout'],
+  },
+  {
+    id: 'atelier-canvas',
+    index: '02',
+    title: 'Atelier Canvas',
+    version: 'v3.0',
+    category: 'design',
+    taglineEn: 'Browser Figma Pro × Framer Design & Prototyping Studio',
+    taglineVi: 'Phần Mềm Thiết Kế & Tạo Mẫu Chuẩn Figma Trên Trình Duyệt',
+    previewImage: 'previews/atelier-canvas.webp',
+    highlightMetric: 'Multi-Screen · 3D Z-Stack',
+    ciBadge: '18/18 CI',
+    keywords: ['Multi-Artboard', 'GPU Photo Grade', '3D Stack', 'Dev Mode TSX', 'Yjs CRDT'],
+    liveUrl: 'https://tvt987.github.io/atelier-canvas/',
+    repoUrl: 'https://github.com/tvt987/atelier-canvas',
+  },
+  {
+    id: 'aether-acoustics',
+    index: '03',
+    title: 'Aether Acoustics',
+    version: 'v1.0',
+    category: 'commerce',
+    taglineEn: '3D PBR Spatial Audio Hardware Store & Live DSP Lab',
+    taglineVi: 'Cửa Hàng Âm Thanh 3D PBR & Phòng Nghe DSP',
+    previewImage: 'previews/aether-acoustics.webp',
+    highlightMetric: '5-Layer 3D CNC · Web Audio DSP',
+    ciBadge: '17/17 CI',
+    keywords: ['Three.js IBL', 'Web Audio DSP', 'Lenis + GSAP', '3D Card Checkout'],
+    liveUrl: 'https://tvt987.github.io/aether-acoustics/',
+    repoUrl: 'https://github.com/tvt987/aether-acoustics',
+  },
+  {
+    id: 'nexus-lake',
+    index: '04',
+    title: 'Nexus Lake',
+    version: 'v1.0',
+    category: 'systems',
+    taglineEn: 'Local-First DuckDB-WASM Lakehouse & MCP Server',
+    taglineVi: 'Kho Dữ Liệu DuckDB-WASM, WebGPU & MCP Server',
+    previewImage: 'previews/nexus-lake.webp',
+    highlightMetric: '500K Arrow Rows · 166B CRDT',
+    ciBadge: '22/22 CI',
+    keywords: ['DuckDB-WASM', 'WebGPU WGSL', 'Yjs CRDT', 'AG-UI', 'MCP Server TS'],
+    liveUrl: 'https://tvt987.github.io/nexus-lake/',
+    repoUrl: 'https://github.com/tvt987/nexus-lake',
+  },
+  {
+    id: 'verdict-graph',
+    index: '05',
+    title: 'Verdict Graph',
+    version: 'v1.0',
+    category: 'ai',
+    taglineEn: 'Multi-Agent Control Plane & Time-Travel Protocol Debugger',
+    taglineVi: 'Điều Phối Đa Tác Tử AI & Tua Ngược Checkpoint',
+    previewImage: 'previews/verdict-graph.webp',
+    highlightMetric: '0.99 Grounded · -52% Cost',
+    ciBadge: '27/27 CI',
+    keywords: ['MCP 2.0', 'A2A Protocol', 'AG-UI SSE', 'LangGraph Fork', 'OTel GenAI'],
+    liveUrl: 'https://tvt987.github.io/verdict-graph/',
+    repoUrl: 'https://github.com/tvt987/verdict-graph',
+  },
+  {
+    id: 'aegispulse',
+    index: '06',
+    title: 'AegisPulse',
+    version: 'v1.0',
+    category: 'systems',
+    taglineEn: '.NET 10 High-Concurrency Kernel & Hybrid RAG SRE',
+    taglineVi: 'Nhân Giao Dịch .NET 10 Tải Cao & Trợ Lý Hybrid RAG',
+    previewImage: 'previews/aegispulse.webp',
+    highlightMetric: '139,099 RPS · 0 Double-Spend',
+    ciBadge: '18/18 CI',
+    keywords: ['.NET 10 CAS', 'Channel<T> WAL', 'FastAPI', 'BM25 + 384d RRF', 'OpenTelemetry'],
+    liveUrl: 'https://tvt987.github.io/aegispulse-distributed-sre/',
+    repoUrl: 'https://github.com/tvt987/aegispulse-distributed-sre',
   },
 ];
 
-export interface ArchitecturalLaw {
-  index: string;
-  metric: string;
-  titleEn: string;
-  titleVi: string;
-  bodyEn: string;
-  bodyVi: string;
-}
-
-export const ARCHITECTURAL_LAWS: ArchitecturalLaw[] = [
-  {
-    index: 'LAW 01',
-    metric: '1,200ms -> 41.8ms p99',
-    titleEn: 'Hot-Path Allocation Discipline Over ORM Convenience',
-    titleVi: 'Kỷ Luật Cấp Phát Bộ Nhớ Trên Đường Nóng Thay Vì Sự Tiện Lợi Của ORM',
-    bodyEn:
-      'At 5,000+ RPS across 700+ retail stores, EF Core ChangeTracker graphs and dynamic expression trees trigger Gen0/Gen1 GC pauses. Hot transaction paths belong to parameterized Dapper stored procedures, Span-friendly DTOs, and single-roundtrip atomic Redis Lua gates.',
-    bodyVi:
-      'Ở ngưỡng tải 5.000+ RPS trên 700+ siêu thị, đồ thị theo dõi trạng thái của ORM truyền thống gây áp lực thu gom rác bộ nhớ (GC Pause). Đường nóng giao dịch phải được tối ưu bằng Dapper Stored Procedures tham số hóa và chốt chặn nguyên tử Redis Lua một vòng mạng.',
-  },
-  {
-    index: 'LAW 02',
-    metric: '0.000% Double-Spend',
-    titleEn: 'Idempotency & Optimistic CAS Are Financial Primitives',
-    titleVi: 'Idempotency & Khóa Lạc Quan CAS Là Tiên Đề Toàn Vẹn Tài Chính',
-    bodyEn:
-      'Mobile networks retry timeouts; cashiers double-click under pressure. Every mutating endpoint enforces SHA-256 payload-hashed Idempotency-Keys (200 replay / 409 payload mutation) backed by SQL RowVersion optimistic compare-and-swap.',
-    bodyVi:
-      'Mạng di động luôn rớt gói và tự thử lại khi nghẽn. Mọi API thay đổi dữ liệu tiền tệ/tồn kho đều bắt buộc kiểm soát khóa Idempotency băm SHA-256 kết hợp đối soát phiên bản RowVersion nguyên tử dưới cơ sở dữ liệu.',
-  },
-  {
-    index: 'LAW 03',
-    metric: '100% OOD Abstention',
-    titleEn: 'AI Systems Must Know When To Refuse To Speak',
-    titleVi: 'Hệ Thống AI Thực Chiến Phải Biết Từ Chối Trả Lời Khi Thiếu Căn Cứ',
-    bodyEn:
-      'Unbounded LLM generation in enterprise ops destroys trust. Production RAG requires hybrid lexical + dense vector fusion (BM25 + RRF), strict Pydantic output schemas, inline source citations, and deterministic abstention below calibrated confidence thresholds.',
-    bodyVi:
-      'Một mô hình ngôn ngữ tự suy diễn khi thiếu tài liệu là rủi ro chí mạng cho vận hành. Hệ thống RAG cấp doanh nghiệp bắt buộc kết hợp tìm kiếm từ khóa BM25 + Vector RRF, ép kiểu Pydantic nghiêm ngặt và tự động từ chối trả lời dưới ngưỡng tin cậy.',
-  },
-  {
-    index: 'LAW 04',
-    metric: '4–6h US/EU/APAC Overlap',
-    titleEn: 'Autonomous Ownership From Architecture To CI Green',
-    titleVi: 'Làm Chủ Trọn Vẹn Từ Thiết Kế Kiến Trúc Đến Khi CI Xanh 100%',
-    bodyEn:
-      'Zero hand-holding required: clear RFC trade-offs, reproducible benchmarks, containerized deployments, automated xUnit/Pytest/Playwright verification, and frictionless B2B contractor execution across timezones.',
-    bodyVi:
-      'Tác phong đối tác kỹ thuật độc lập: phân tích đánh đổi rõ ràng, đo đạc benchmark định lượng, đóng gói Docker, kiểm thử tự động đa tầng xanh 100% và bàn giao đúng cam kết milestone cho khách hàng quốc tế lẫn nội địa.',
-  },
-];
-
-export interface ExperienceMilestone {
+export interface ExperienceRow {
   period: string;
   org: string;
   roleEn: string;
   roleVi: string;
-  scopeBadge: string;
-  bulletsEn: string[];
-  bulletsVi: string[];
+  keywords: string[];
 }
 
-export const EXPERIENCE_LEDGER: ExperienceMilestone[] = [
+export const EXPERIENCE_ROWS: ExperienceRow[] = [
   {
-    period: 'NOV 2023 — PRESENT',
-    org: 'CON CUNG CORPORATION',
-    roleEn: 'Full-Stack .NET & Applied AI Engineer',
-    roleVi: 'Kỹ Sư Full-Stack .NET & Trí Tuệ Nhân Tạo Ứng Dụng',
-    scopeBadge: '700+ NATIONWIDE RETAIL STORES · CORE ERP & COMMERCE',
-    bulletsEn: [
-      'Engineered high-concurrency C# / .NET 8 & Angular voucher, promotion, and 7-tier subscription APIs with SQL Server stored procedures, Dapper mapping, Redis caching, and pre-batch validation.',
-      'Implemented Keycloak OAuth 2.0 / OpenID Connect / JWT authentication and granular RBAC across internal retail operations and store-layout planogram data structures.',
-      'Integrated semantic vector search into commerce workflows and automated market-intelligence & QA pipelines using Python, FastAPI, Qdrant, n8n, and MCP agent toolchains.',
-    ],
-    bulletsVi: [
-      'Phát triển và tối ưu hệ thống API C# / .NET 8 & Angular quản lý voucher, khuyến mãi, gói hội viên 7 tầng quyền lợi với SQL Server Stored Procedures, Dapper và Redis trên quy mô 700+ siêu thị.',
-      'Triển khai xác thực tập trung Keycloak OAuth 2.0 / OIDC / JWT và phân quyền RBAC chi tiết cùng cấu trúc dữ liệu tối ưu trưng bày quầy kệ cửa hàng.',
-      'Tích hợp tìm kiếm ngữ nghĩa Vector Search vào cổng thương mại và tự động hóa quy trình thu thập dữ liệu / kiểm thử bằng Python, FastAPI, Qdrant, n8n và Agent MCP.',
-    ],
+    period: '2023 — NOW',
+    org: 'Con Cung Corp',
+    roleEn: 'Full-Stack .NET & Applied AI',
+    roleVi: 'Full-Stack .NET & Applied AI',
+    keywords: ['700+ Stores', '.NET 8', 'Dapper', 'SQL Server', 'Redis Lua', 'Keycloak OIDC', 'n8n', 'MCP'],
   },
   {
-    period: 'SEP 2023 — NOV 2023',
-    org: 'FPT SOFTWARE',
-    roleEn: 'Frontend Software Engineering Intern',
-    roleVi: 'Thực Tập Sinh Kỹ Sư Phần Mềm Frontend',
-    scopeBadge: 'ENTERPRISE E-COMMERCE WEB',
-    bulletsEn: [
-      'Built modular Angular & TypeScript UI workflows, integrated RESTful e-commerce APIs, and resolved cross-device responsive layout bottlenecks.',
-    ],
-    bulletsVi: [
-      'Xây dựng các phân hệ giao diện Angular & TypeScript, tích hợp RESTful API thương mại điện tử và xử lý triệt để tương thích đa thiết bị.',
-    ],
+    period: '2023',
+    org: 'FPT Software',
+    roleEn: 'Frontend Engineer Intern',
+    roleVi: 'Thực Tập Sinh Frontend',
+    keywords: ['Angular', 'TypeScript', 'E-Commerce REST', 'Responsive UI'],
   },
   {
     period: '2022 — 2026',
-    org: 'UNIVERSITY OF INFORMATION TECHNOLOGY (UIT — VNU-HCM)',
-    roleEn: 'B.S. in Information Technology',
-    roleVi: 'Cử Nhân Công Nghệ Thông Tin — ĐH Công Nghệ Thông Tin (ĐHQG TP.HCM)',
-    scopeBadge: 'HO CHI MINH CITY, VIETNAM',
-    bulletsEn: [
-      'Focused on Distributed Systems, Database Internals, High-Concurrency Backend Engineering, and Applied Machine Learning / Retrieval Systems.',
-    ],
-    bulletsVi: [
-      'Chuyên sâu Hệ thống phân tán, Kiến trúc cơ sở dữ liệu hiệu năng cao, Kỹ thuật phần mềm chịu tải và Hệ thống truy xuất thông tin thông minh (RAG/LLM).',
-    ],
+    org: 'UIT — VNU-HCM',
+    roleEn: 'B.S. Information Technology',
+    roleVi: 'Cử Nhân CNTT — ĐHQG TP.HCM',
+    keywords: ['Distributed Systems', 'Database Internals', 'Applied AI / RAG'],
+  },
+];
+
+export interface SkillGroup {
+  labelEn: string;
+  labelVi: string;
+  items: string[];
+}
+
+export const SKILL_GROUPS: SkillGroup[] = [
+  {
+    labelEn: 'Backend & Concurrency',
+    labelVi: 'Backend & Tải Cao',
+    items: ['C#', '.NET 8/10', 'Dapper', 'SQL Server', 'PostgreSQL', 'Redis Lua', 'RabbitMQ', 'Polly v8', 'Keycloak OIDC', 'OpenTelemetry'],
+  },
+  {
+    labelEn: 'Applied AI & Protocols',
+    labelVi: 'AI Ứng Dụng & Giao Thức',
+    items: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'AG-UI SSE', 'LangGraph', 'Hybrid RAG (BM25 + RRF)', 'Qdrant', 'Prompt Guardrails'],
+  },
+  {
+    labelEn: 'Frontend, 3D & Local-First',
+    labelVi: 'Frontend, 3D & Local-First',
+    items: ['React 19', 'TypeScript', 'Angular 19', 'Tailwind v4', 'Three.js PBR', 'WebGL2 / WebGPU WGSL', 'DuckDB-WASM', 'Yjs CRDT', 'Lenis + GSAP', 'Web Audio DSP'],
+  },
+];
+
+export interface CvItem {
+  id: string;
+  titleEn: string;
+  titleVi: string;
+  keywords: string;
+  href: string;
+  accent: string;
+}
+
+export const CV_DOSSIERS: CvItem[] = [
+  {
+    id: 'backend',
+    titleEn: 'Backend CV',
+    titleVi: 'CV Backend',
+    keywords: '.NET 10 · C# · SQL · Redis · OTel',
+    href: './CV_Backend_TruongVanTinh.pdf',
+    accent: '#38BDF8',
+  },
+  {
+    id: 'fullstack',
+    titleEn: 'Full-Stack CV',
+    titleVi: 'CV Full-Stack',
+    keywords: 'React 19 · Angular · Three.js · WASM',
+    href: './CV_FullStack_TruongVanTinh.pdf',
+    accent: '#A78BFA',
+  },
+  {
+    id: 'ai',
+    titleEn: 'Applied AI CV',
+    titleVi: 'CV Applied AI',
+    keywords: 'Python · MCP · A2A · LangGraph · RAG',
+    href: './CV_AI_TruongVanTinh.pdf',
+    accent: '#34D399',
   },
 ];

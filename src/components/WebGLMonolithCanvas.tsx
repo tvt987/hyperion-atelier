@@ -66,41 +66,35 @@ const FRAGMENT_SHADER = /* glsl */ `
     return mix(d2, d1, h) - k * h * (1.0 - h);
   }
 
-  // 3-Preset Morphable Ferrofluid Architectural Sculpture
   float mapScene(vec3 p) {
     vec3 q = p;
+    vec2 mTilt = (u_mouse - 0.5) * 1.1;
+    q.xz *= rot(u_time * 0.34 + mTilt.x + u_scroll * 1.8);
+    q.yz *= rot(0.38 + u_time * 0.21 - mTilt.y);
 
-    // Interactive pointer tilt + continuous orbital rotation
-    vec2 mTilt = (u_mouse - 0.5) * 1.15;
-    q.xz *= rot(u_time * 0.38 + mTilt.x + u_scroll * 2.1);
-    q.yz *= rot(0.42 + u_time * 0.23 - mTilt.y);
-
-    // Preset 0: Dual Gyroscopic Torus + Octahedral Core
     vec3 t1 = q;
-    t1.xy *= rot(u_time * 0.55);
-    float ringOuter = sdTorus(t1, vec2(1.02, 0.115));
+    t1.xy *= rot(u_time * 0.52);
+    float ringOuter = sdTorus(t1, vec2(1.02, 0.11));
 
     vec3 t2 = q;
-    t2.yz *= rot(-u_time * 0.68 + 0.9);
-    float ringInner = sdTorus(t2, vec2(0.68, 0.095));
+    t2.yz *= rot(-u_time * 0.64 + 0.9);
+    float ringInner = sdTorus(t2, vec2(0.68, 0.092));
 
-    float coreOct = sdOctahedron(q, 0.54);
+    float coreOct = sdOctahedron(q, 0.52);
     float gyroPreset = opSmoothUnion(opSmoothUnion(ringOuter, ringInner, 0.22), coreOct, 0.28);
 
-    // Preset 1: Precision Architectural Hyper-Frame + Suspended Core
     vec3 fPos = q;
-    fPos.xy *= rot(0.35 * sin(u_time * 0.5));
-    float boxFrame = sdBoxFrame(fPos, vec3(0.88), 0.085);
-    float innerSphere = length(q) - 0.52 + 0.045 * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
+    fPos.xy *= rot(0.35 * sin(u_time * 0.48));
+    float boxFrame = sdBoxFrame(fPos, vec3(0.86), 0.08);
+    float innerSphere = length(q) - 0.50 + 0.04 * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
     float framePreset = opSmoothUnion(boxFrame, innerSphere, 0.24);
 
-    // Preset 2: Organic Ferrofluid Multi-Lobe Attractor
-    float dFluid = length(q) - 0.68;
+    float dFluid = length(q) - 0.66;
     for (int i = 0; i < 4; i++) {
       float fi = float(i);
-      float ang = u_time * (0.65 + fi * 0.14) + fi * 1.57079;
-      vec3 orbOffset = vec3(cos(ang) * 0.78, sin(ang * 1.3) * 0.62, sin(ang) * 0.78);
-      float droplet = length(q - orbOffset) - 0.30;
+      float ang = u_time * (0.62 + fi * 0.14) + fi * 1.57079;
+      vec3 orbOffset = vec3(cos(ang) * 0.76, sin(ang * 1.3) * 0.60, sin(ang) * 0.76);
+      float droplet = length(q - orbOffset) - 0.29;
       dFluid = opSmoothUnion(dFluid, droplet, 0.38);
     }
 
@@ -109,15 +103,13 @@ const FRAGMENT_SHADER = /* glsl */ `
     float baseShape = mix(gyroPreset, framePreset, w01);
     baseShape = mix(baseShape, dFluid, w12);
 
-    // Subtle harmonic surface micro-displacement
-    float harmonic = 0.018 * sin(10.0 * q.x + u_time * 2.1) * cos(10.0 * q.y - u_time * 1.7) * sin(10.0 * q.z);
-    baseShape += harmonic * (1.0 + min(abs(u_velocity) * 0.06, 1.2));
+    float harmonic = 0.015 * sin(10.0 * q.x + u_time * 2.0) * cos(10.0 * q.y - u_time * 1.6) * sin(10.0 * q.z);
+    baseShape += harmonic * (1.0 + min(abs(u_velocity) * 0.05, 1.0));
 
-    // Interactive cursor satellite droplet that fuses smoothly on proximity
-    vec3 cursorOrbPos = vec3((u_mouse.x - 0.5) * 2.1, (u_mouse.y - 0.5) * 1.9, 0.45);
-    float cursorDroplet = length(p - cursorOrbPos) - 0.25;
+    vec3 cursorOrbPos = vec3((u_mouse.x - 0.5) * 2.0, (u_mouse.y - 0.5) * 1.8, 0.45);
+    float cursorDroplet = length(p - cursorOrbPos) - 0.23;
 
-    return opSmoothUnion(baseShape, cursorDroplet, 0.40);
+    return opSmoothUnion(baseShape, cursorDroplet, 0.42);
   }
 
   vec3 calcNormal(vec3 p) {
@@ -143,7 +135,6 @@ const FRAGMENT_SHADER = /* glsl */ `
     return clamp(1.0 - 2.3 * occ, 0.0, 1.0);
   }
 
-  // Thin-film spectral iridescence helper
   vec3 thinFilmPalette(float t) {
     vec3 a = vec3(0.55, 0.36, 0.28);
     vec3 b = vec3(0.45, 0.32, 0.26);
@@ -154,34 +145,25 @@ const FRAGMENT_SHADER = /* glsl */ `
 
   void main() {
     vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-
-    vec3 ro = vec3(0.0, 0.0, 3.72);
+    vec3 ro = vec3(0.0, 0.0, 3.62);
     vec3 rd = normalize(vec3(uv, -1.52));
 
-    // Drafting studio background
-    vec3 darkBg = vec3(0.038, 0.039, 0.046);
-    vec3 paperBg = vec3(0.925, 0.910, 0.882);
+    vec3 darkBg = vec3(0.043, 0.046, 0.058);
+    vec3 paperBg = vec3(0.945, 0.935, 0.915);
     vec3 bg = mix(darkBg, paperBg, u_paper);
 
-    // Subtle CAD crosshair grid + radial telemetry rings
-    vec2 gUv = uv * 8.0;
-    vec2 gCell = abs(fract(gUv - 0.5) - 0.5) / fwidth(gUv);
-    float gLine = 1.0 - min(min(gCell.x, gCell.y), 1.0);
     float rDist = length(uv);
-    float ring1 = smoothstep(0.006, 0.0, abs(rDist - 0.42));
-    float ring2 = smoothstep(0.005, 0.0, abs(rDist - 0.66));
-    vec3 cadCol = mix(vec3(0.18, 0.18, 0.21), vec3(0.78, 0.75, 0.70), u_paper);
-    bg = mix(bg, cadCol, gLine * 0.26 + (ring1 + ring2) * 0.35);
+    float ring1 = smoothstep(0.005, 0.0, abs(rDist - 0.45));
+    vec3 cadCol = mix(vec3(0.16, 0.17, 0.21), vec3(0.80, 0.78, 0.74), u_paper);
+    bg = mix(bg, cadCol, ring1 * 0.28);
 
-    // Warm studio radial glow behind sculpture
-    float centerGlow = exp(-rDist * 2.4);
+    float centerGlow = exp(-rDist * 2.3);
     bg += mix(
-      vec3(1.0, 0.30, 0.02) * centerGlow * 0.14,
-      vec3(0.85, 0.24, 0.02) * centerGlow * 0.09,
+      vec3(1.0, 0.30, 0.02) * centerGlow * 0.16,
+      vec3(0.85, 0.24, 0.02) * centerGlow * 0.08,
       u_paper
     );
 
-    // 60-step SDF Raymarching
     float t = 0.0;
     float hit = 0.0;
     for (int i = 0; i < 60; i++) {
@@ -210,45 +192,41 @@ const FRAGMENT_SHADER = /* glsl */ `
       float diffKey = max(dot(nor, keyDir), 0.0);
       float diffFill = max(dot(nor, fillDir), 0.0);
       float fresnel = pow(clamp(1.0 + dot(nor, rd), 0.0, 1.0), 2.6);
-      float specSharp = pow(max(dot(refl, keyDir), 0.0), 42.0);
+      float specSharp = pow(max(dot(refl, keyDir), 0.0), 46.0);
       float specBroad = pow(max(dot(refl, fillDir), 0.0), 10.0);
       float underCaustic = max(dot(nor, rimDir), 0.0);
 
-      // Environment studio skybox reflection approximation
       float envBands = 0.5 + 0.5 * sin(refl.y * 5.5 + refl.x * 2.2);
       vec3 irid = thinFilmPalette(fresnel * 0.85 + pos.y * 0.25 + u_time * 0.06);
 
-      // Material A: Obsidian Liquid Titanium Chrome + Vermilion Edge Fire
-      vec3 gunmetal = vec3(0.11, 0.115, 0.13) + diffKey * vec3(0.36, 0.37, 0.40);
-      gunmetal += diffFill * vec3(0.14, 0.16, 0.20);
-      gunmetal += envBands * vec3(0.16, 0.17, 0.20) * (0.45 + 0.55 * fresnel);
+      vec3 gunmetal = vec3(0.11, 0.115, 0.13) + diffKey * vec3(0.38, 0.39, 0.42);
+      gunmetal += diffFill * vec3(0.14, 0.16, 0.21);
+      gunmetal += envBands * vec3(0.16, 0.17, 0.21) * (0.45 + 0.55 * fresnel);
       gunmetal = mix(gunmetal, irid, fresnel * 0.34);
-      gunmetal += fresnel * vec3(1.0, 0.31, 0.02) * 1.15;
-      gunmetal += underCaustic * vec3(1.0, 0.26, 0.0) * 0.42;
+      gunmetal += fresnel * vec3(1.0, 0.31, 0.02) * 1.18;
+      gunmetal += underCaustic * vec3(1.0, 0.26, 0.0) * 0.40;
       gunmetal += specBroad * vec3(1.0, 0.52, 0.24) * 0.48;
-      gunmetal += specSharp * vec3(1.0, 0.97, 0.93) * 1.15;
-      gunmetal *= mix(0.38, 1.0, ao);
+      gunmetal += specSharp * vec3(1.0, 0.97, 0.93) * 1.2;
+      gunmetal *= mix(0.4, 1.0, ao);
 
-      // Material B: Swiss Sculpted Alabaster Ceramic & Brushed Silver
-      vec3 porcelain = vec3(0.76, 0.74, 0.70) + diffKey * vec3(0.28, 0.27, 0.25);
+      vec3 porcelain = vec3(0.78, 0.76, 0.72) + diffKey * vec3(0.26, 0.25, 0.23);
       porcelain += diffFill * vec3(0.10, 0.10, 0.11);
-      porcelain -= (1.0 - ao) * 0.36;
-      porcelain = mix(porcelain, vec3(0.86, 0.23, 0.02), fresnel * 0.68 + underCaustic * 0.25);
+      porcelain -= (1.0 - ao) * 0.34;
+      porcelain = mix(porcelain, vec3(0.86, 0.23, 0.02), fresnel * 0.65 + underCaustic * 0.24);
       porcelain += specSharp * vec3(1.0) * 0.85;
 
       col = mix(gunmetal, porcelain, u_paper);
     }
 
-    // Subtle tone-mapping & gamma polish
-    col = col / (1.0 + col * 0.18);
+    col = col / (1.0 + col * 0.16);
     gl_FragColor = vec4(col, 1.0);
   }
 `;
 
 const PRESETS = [
-  { id: 0, label: '01.GYRO_TORUS' },
-  { id: 1, label: '02.HYPER_FRAME' },
-  { id: 2, label: '03.FERRO_CLUSTER' },
+  { id: 0, label: 'Gyro' },
+  { id: 1, label: 'Frame' },
+  { id: 2, label: 'Ferro' },
 ] as const;
 
 export function WebGLMonolithCanvas({
@@ -296,21 +274,13 @@ export function WebGLMonolithCanvas({
         const w = (fallbackCanvas.width = container.clientWidth || 520);
         const h = (fallbackCanvas.height = container.clientHeight || 520);
         const isPaper = targetPaperRef.current > 0.5;
-        ctx.fillStyle = isPaper ? '#ECE8DF' : '#0A0A0D';
+        ctx.fillStyle = isPaper ? '#F1EFEA' : '#0B0C10';
         ctx.fillRect(0, 0, w, h);
         ctx.strokeStyle = isPaper ? '#D93B00' : '#FF4D00';
         ctx.lineWidth = 1.6;
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 6; i++) {
           ctx.beginPath();
-          ctx.ellipse(
-            w * 0.5,
-            h * 0.5,
-            70 + i * 22,
-            40 + i * 14,
-            t * 0.015 + i * 0.4,
-            0,
-            Math.PI * 2
-          );
+          ctx.ellipse(w * 0.5, h * 0.5, 70 + i * 22, 40 + i * 14, t * 0.014 + i * 0.4, 0, Math.PI * 2);
           ctx.stroke();
         }
         t++;
@@ -361,12 +331,7 @@ export function WebGLMonolithCanvas({
     const pointerTarget = { x: 0.62, y: 0.58 };
     const onPointerMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
-      if (
-        e.clientX >= rect.left &&
-        e.clientX <= rect.right &&
-        e.clientY >= rect.top &&
-        e.clientY <= rect.bottom
-      ) {
+      if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
         pointerTarget.x = (e.clientX - rect.left) / Math.max(1, rect.width);
         pointerTarget.y = 1.0 - (e.clientY - rect.top) / Math.max(1, rect.height);
       } else {
@@ -399,21 +364,16 @@ export function WebGLMonolithCanvas({
       uniforms.u_time.value = (now - startTime) * 0.001 + 1.4;
       uniforms.u_mouse.value.x += (pointerTarget.x - uniforms.u_mouse.value.x) * 0.08;
       uniforms.u_mouse.value.y += (pointerTarget.y - uniforms.u_mouse.value.y) * 0.08;
-      uniforms.u_scroll.value +=
-        (scrollProgressRef.current - uniforms.u_scroll.value) * 0.09;
-      uniforms.u_velocity.value +=
-        (scrollVelocityRef.current - uniforms.u_velocity.value) * 0.12;
-      uniforms.u_paper.value +=
-        (targetPaperRef.current - uniforms.u_paper.value) * 0.09;
-      uniforms.u_morph.value +=
-        (targetMorphRef.current - uniforms.u_morph.value) * 0.075;
+      uniforms.u_scroll.value += (scrollProgressRef.current - uniforms.u_scroll.value) * 0.09;
+      uniforms.u_velocity.value += (scrollVelocityRef.current - uniforms.u_velocity.value) * 0.12;
+      uniforms.u_paper.value += (targetPaperRef.current - uniforms.u_paper.value) * 0.09;
+      uniforms.u_morph.value += (targetMorphRef.current - uniforms.u_morph.value) * 0.075;
 
       renderer.render(scene, camera);
 
       frameCounter++;
       if (now - lastFpsStamp >= 1000) {
-        const fps = Math.round((frameCounter * 1000) / (now - lastFpsStamp));
-        onFpsSample?.(fps);
+        onFpsSample?.(Math.round((frameCounter * 1000) / (now - lastFpsStamp)));
         frameCounter = 0;
         lastFpsStamp = now;
       }
@@ -434,22 +394,11 @@ export function WebGLMonolithCanvas({
   }, [onFpsSample, scrollProgressRef, scrollVelocityRef]);
 
   return (
-    <div className="relative w-full h-full min-h-[380px] sm:min-h-[450px] flex flex-col justify-between overflow-hidden hairline-box bg-[var(--bg-elevated)]">
-      {/* Live WebGL2 Raymarching Canvas */}
-      <div
-        ref={stageRef}
-        data-cursor="WARP SDF FIELD"
-        className="absolute inset-0 z-0"
-      />
+    <div className="relative w-full h-full min-h-[380px] lg:min-h-[500px] rounded-[24px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)] shadow-[var(--card-shadow)]">
+      <div ref={stageRef} data-cursor="SDF 3D" className="absolute inset-0 z-0" />
 
-      {/* Top Precision Viewport Telemetry Overlay */}
-      <div className="relative z-10 flex items-center justify-between px-4 py-2.5 bg-[var(--bg-glass)] backdrop-blur-md hairline-b font-mono-tech text-[10px] text-[var(--fg-secondary)] pointer-events-none">
-        <span>WEBGL2 // 60-STEP SDF RAYMARCHING</span>
-        <span style={{ color: 'var(--signal-ok)' }}>● GPU ACTIVE</span>
-      </div>
-
-      {/* Bottom Interactive Geometry Morph Switcher */}
-      <div className="relative z-10 mt-auto flex items-center justify-between gap-1 p-2 bg-[var(--bg-glass)] backdrop-blur-md hairline-t">
+      {/* Minimal Floating Pill Morph Controls */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 p-1 rounded-full bg-[var(--bg-glass)] backdrop-blur-xl border border-[var(--hairline)]">
         {PRESETS.map((preset) => {
           const selected = activePreset === preset.id;
           return (
@@ -457,17 +406,16 @@ export function WebGLMonolithCanvas({
               key={preset.id}
               type="button"
               data-testid={`shader-preset-${preset.id}`}
-              data-cursor="MORPH SDF"
               onClick={() => {
                 tactileAudio.playLatch();
                 setActivePreset(preset.id);
                 targetMorphRef.current = preset.id;
               }}
               style={{
-                backgroundColor: selected ? 'var(--accent)' : 'transparent',
-                color: selected ? '#FFFFFF' : 'var(--fg-secondary)',
+                backgroundColor: selected ? 'var(--fg-primary)' : 'transparent',
+                color: selected ? 'var(--bg-primary)' : 'var(--fg-secondary)',
               }}
-              className="flex-1 py-1.5 px-2 font-mono-tech text-[10px] font-semibold tracking-wider text-center transition cursor-pointer"
+              className="px-3.5 py-1 rounded-full font-mono-tech text-[11px] font-semibold tracking-wide transition cursor-pointer"
             >
               {preset.label}
             </button>
