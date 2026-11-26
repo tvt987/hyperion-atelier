@@ -74,7 +74,7 @@ export function App() {
   const [lang, setLang] = useState<'en' | 'vi'>('en');
   const [category, setCategory] = useState<WorkCategory>('all');
   const [audioOn, setAudioOn] = useState<boolean>(false);
-  const [fluidEnabled, setFluidEnabled] = useState<boolean>(true);
+  const [fluidEnabled, setFluidEnabled] = useState<boolean>(false);
   const [particlesEnabled, setParticlesEnabled] = useState<boolean>(true);
   const [fps, setFps] = useState<number>(60);
   const [ambientTelemetry, setAmbientTelemetry] = useState<AmbientFieldTelemetry>({
