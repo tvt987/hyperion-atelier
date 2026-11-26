@@ -16,6 +16,7 @@ export interface AmbientFieldTelemetry {
 }
 
 interface WebGpuAmbientFieldProps {
+  enabled?: boolean;
   theme: AtelierTheme;
   scrollVelocityRef: React.MutableRefObject<number>;
   onTelemetryChange?: (telemetry: AmbientFieldTelemetry) => void;
@@ -108,6 +109,7 @@ const GPU_BUFFER_USAGE_STORAGE = 0x0080;
 const GPU_BUFFER_USAGE_COPY_DST = 0x0008;
 
 export function WebGpuAmbientField({
+  enabled = true,
   theme,
   scrollVelocityRef,
   onTelemetryChange,
@@ -122,6 +124,11 @@ export function WebGpuAmbientField({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (!enabled) {
+      const ctx = canvas.getContext('2d');
+      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
 
     let disposed = false;
     let rafId = 0;
@@ -447,14 +454,16 @@ export function WebGpuAmbientField({
       window.removeEventListener('pointermove', onPointerMove);
       cleanupResources?.();
     };
-  }, [onTelemetryChange, scrollVelocityRef]);
+  }, [enabled, onTelemetryChange, scrollVelocityRef]);
 
   return (
     <canvas
       ref={canvasRef}
       aria-hidden="true"
       data-testid="webgpu-ambient-field"
-      className="fixed inset-0 w-full h-full z-0 pointer-events-none opacity-65"
+      className={`fixed inset-0 w-full h-full z-0 pointer-events-none transition-opacity duration-500 ${
+        enabled ? 'opacity-65' : 'opacity-0'
+      }`}
     />
   );
 }

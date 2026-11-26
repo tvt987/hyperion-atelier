@@ -173,7 +173,7 @@ export function CommandPaletteModal({
         {/* Footer Keyboard Legend */}
         <div className="px-4 py-2.5 hairline-t bg-[var(--bg-elevated)] flex items-center justify-between font-mono-tech text-[10px] text-[var(--fg-muted)]">
           <span>UP / DOWN TO NAVIGATE · ENTER TO EXECUTE</span>
-          <span>TRUONG VAN TINH // ATELIER OS v4.0</span>
+          <span>TRUONG VAN TINH // ATELIER OS v5.0</span>
         </div>
       </div>
     </div>

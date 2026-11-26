@@ -1,15 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { AskTinhModal } from './components/AskTinhModal';
 import { CommandPaletteModal, type CommandItem } from './components/CommandPaletteModal';
 import { DistributedSystemsLab } from './components/DistributedSystemsLab';
 import { FlagshipCard } from './components/FlagshipCard';
 import { FlagshipDock } from './components/FlagshipDock';
 import { FlagshipLightbox } from './components/FlagshipLightbox';
+import { GitHubPulseBar } from './components/GitHubPulseBar';
 import { GlyphDecodeText, KineticText } from './components/KineticText';
 import { LiquidGlassFilter } from './components/LiquidGlassFilter';
 import { MagneticCursor } from './components/MagneticCursor';
+import {
+  NavierStokesFluidCanvas,
+  type FluidTelemetry,
+} from './components/NavierStokesFluidCanvas';
 import { OdometerMetric } from './components/OdometerMetric';
 import { PlatformInspectorPopover } from './components/PlatformInspectorPopover';
 import { WebGLMonolithCanvas } from './components/WebGLMonolithCanvas';
@@ -24,9 +31,20 @@ import {
   SKILL_GROUPS,
   type WorkCategory,
 } from './data/atelierContent';
+import {
+  applyAccentToDocument,
+  DEFAULT_ACCENT_OBSIDIAN,
+  DEFAULT_ACCENT_PAPER,
+} from './engines/accentEngine';
+import type { BuiltInAiProbe } from './engines/aiTwinEngine';
 import { ambientAudio } from './engines/ambientAudio';
 import { tactileAudio } from './engines/tactileAudio';
 import { applyAtelierThemeWithTransition, type AtelierTheme } from './engines/themeTransition';
+import {
+  isSpeechRecognitionSupported,
+  startVoiceSession,
+  type VoiceIntent,
+} from './engines/voicePilot';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,6 +58,10 @@ const CATEGORIES: Array<{ id: WorkCategory; labelEn: string; labelVi: string }> 
   { id: 'systems', labelEn: 'Data & Core', labelVi: 'Hệ Thống' },
 ];
 
+type DocWithViewTransition = Document & {
+  startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+};
+
 export function App() {
   const [theme, setTheme] = useState<AtelierTheme>(() => {
     if (typeof window !== 'undefined') {
@@ -48,25 +70,47 @@ export function App() {
     }
     return 'obsidian';
   });
+  const [customAccentHex, setCustomAccentHex] = useState<string | null>(null);
   const [lang, setLang] = useState<'en' | 'vi'>('en');
   const [category, setCategory] = useState<WorkCategory>('all');
   const [audioOn, setAudioOn] = useState<boolean>(false);
+  const [fluidEnabled, setFluidEnabled] = useState<boolean>(true);
+  const [particlesEnabled, setParticlesEnabled] = useState<boolean>(true);
   const [fps, setFps] = useState<number>(60);
   const [ambientTelemetry, setAmbientTelemetry] = useState<AmbientFieldTelemetry>({
     backend: 'canvas-fallback',
     particleCount: 900,
     label: 'CANVAS FALLBACK · 900',
   });
+  const [fluidTelemetry, setFluidTelemetry] = useState<FluidTelemetry>({
+    active: false,
+    label: 'INITIALIZING',
+  });
+  const [aiProbe, setAiProbe] = useState<BuiltInAiProbe>({
+    engine: 'local-hybrid-rag',
+    status: 'unavailable',
+    label: 'LOCAL HYBRID RAG · 0ms',
+  });
   const [cmdOpen, setCmdOpen] = useState<boolean>(false);
+  const [askAiOpen, setAskAiOpen] = useState<boolean>(false);
   const [lightboxId, setLightboxId] = useState<string | null>(null);
+  const [transitionCardId, setTransitionCardId] = useState<string | null>(null);
   const [zaloModalOpen, setZaloModalOpen] = useState<boolean>(false);
   const [copiedEmail, setCopiedEmail] = useState<boolean>(false);
+  const [voiceListening, setVoiceListening] = useState<boolean>(false);
+  const [voiceTranscript, setVoiceTranscript] = useState<string>('');
   const [labCmdSeq, setLabCmdSeq] = useState<number>(0);
   const [labCmdKind, setLabCmdKind] = useState<'RAFT_FAILOVER' | 'SHARD_OUTAGE' | 'BENCHMARK' | null>(null);
 
   const scrollProgressRef = useRef<number>(0);
   const scrollVelocityRef = useRef<number>(0);
   const lenisRef = useRef<Lenis | null>(null);
+  const stopVoiceRef = useRef<(() => void) | null>(null);
+
+  const speechSupported = useMemo(() => isSpeechRecognitionSupported(), []);
+  const effectiveAccentHex =
+    customAccentHex ??
+    (theme === 'paper' ? DEFAULT_ACCENT_PAPER : DEFAULT_ACCENT_OBSIDIAN);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -77,15 +121,43 @@ export function App() {
   }, [lang]);
 
   useEffect(() => {
+    applyAccentToDocument(customAccentHex);
+  }, [customAccentHex]);
+
+  useEffect(() => {
     return ambientAudio.subscribe((active) => setAudioOn(active));
   }, []);
 
+  // Spatial Stereo Panning synced to pointer X across viewport
+  useEffect(() => {
+    const onPointerMove = (ev: PointerEvent) => {
+      const normX = ev.clientX / Math.max(1, window.innerWidth);
+      tactileAudio.setPointerPanX(normX);
+      ambientAudio.setSpatialPanX(normX);
+    };
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onPointerMove);
+  }, []);
+
+  // Global keyboard shortcuts: CMD+K (Command Palette) and `/` (Ask AI Twin)
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
       if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'k') {
         ev.preventDefault();
         tactileAudio.playLatch();
         setCmdOpen((prev) => !prev);
+        return;
+      }
+
+      const target = ev.target as HTMLElement | null;
+      const isTyping =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable;
+      if (!isTyping && ev.key === '/' && !ev.metaKey && !ev.ctrlKey && !ev.altKey) {
+        ev.preventDefault();
+        tactileAudio.playLatch();
+        setAskAiOpen(true);
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -146,8 +218,9 @@ export function App() {
   }, []);
 
   const handleThemeSwitch = useCallback(
-    (ev?: React.MouseEvent<HTMLButtonElement>) => {
-      const next: AtelierTheme = theme === 'obsidian' ? 'paper' : 'obsidian';
+    (ev?: React.MouseEvent<HTMLButtonElement>, forced?: AtelierTheme) => {
+      const next: AtelierTheme = forced ?? (theme === 'obsidian' ? 'paper' : 'obsidian');
+      if (next === theme) return;
       tactileAudio.playChordPulse();
       applyAtelierThemeWithTransition(next, ev?.clientX, ev?.clientY, (committed) => {
         setTheme(committed);
@@ -155,6 +228,107 @@ export function App() {
     },
     [theme]
   );
+
+  // Shared-Element View Transition Lightbox Open / Close
+  const openLightboxWithTransition = useCallback((workId: string) => {
+    const doc = document as DocWithViewTransition;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!doc.startViewTransition || prefersReduced) {
+      setLightboxId(workId);
+      return;
+    }
+
+    flushSync(() => {
+      setTransitionCardId(workId);
+    });
+    const transition = doc.startViewTransition(() => {
+      flushSync(() => {
+        setTransitionCardId(null);
+        setLightboxId(workId);
+      });
+    });
+    void transition.finished.catch(() => {});
+  }, []);
+
+  const closeLightboxWithTransition = useCallback(() => {
+    const closingId = lightboxId;
+    const doc = document as DocWithViewTransition;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!closingId || !doc.startViewTransition || prefersReduced) {
+      setLightboxId(null);
+      setTransitionCardId(null);
+      return;
+    }
+
+    const transition = doc.startViewTransition(() => {
+      flushSync(() => {
+        setLightboxId(null);
+        setTransitionCardId(closingId);
+      });
+    });
+    void transition.finished
+      .finally(() => {
+        setTransitionCardId(null);
+      })
+      .catch(() => {});
+  }, [lightboxId]);
+
+  const executeVoiceIntent = useCallback(
+    (intent: VoiceIntent) => {
+      if (intent.type === 'THEME') {
+        handleThemeSwitch(undefined, intent.value);
+      } else if (intent.type === 'OPEN_WORK') {
+        openLightboxWithTransition(intent.workId);
+      } else if (intent.type === 'ASK_AI') {
+        setAskAiOpen(true);
+      } else if (intent.type === 'SCROLL') {
+        scrollToSection(intent.sectionId);
+      } else if (intent.type === 'OPEN_INSPECTOR') {
+        const el = document.getElementById('platform-inspector') as
+          | (HTMLElement & { showPopover?: () => void })
+          | null;
+        el?.showPopover?.();
+      }
+    },
+    [handleThemeSwitch, openLightboxWithTransition, scrollToSection]
+  );
+
+  const handleToggleVoice = useCallback(() => {
+    if (!speechSupported) return;
+    if (voiceListening) {
+      stopVoiceRef.current?.();
+      stopVoiceRef.current = null;
+      setVoiceListening(false);
+      return;
+    }
+
+    tactileAudio.playLatch();
+    setVoiceTranscript(lang === 'vi' ? 'Đang nghe...' : 'Listening...');
+    setVoiceListening(true);
+
+    const stop = startVoiceSession({
+      lang,
+      onInterim: (text) => setVoiceTranscript(text),
+      onFinal: (text, intent) => {
+        setVoiceTranscript(text);
+        if (intent) {
+          executeVoiceIntent(intent);
+        }
+        window.setTimeout(() => setVoiceTranscript(''), 1800);
+      },
+      onEnd: () => {
+        setVoiceListening(false);
+        stopVoiceRef.current = null;
+      },
+    });
+
+    if (!stop) {
+      setVoiceListening(false);
+      setVoiceTranscript('');
+    } else {
+      stopVoiceRef.current = stop;
+    }
+  }, [executeVoiceIntent, lang, speechSupported, voiceListening]);
 
   const handleCopyEmail = useCallback(() => {
     navigator.clipboard?.writeText('tinhkun102@gmail.com').catch(() => {});
@@ -170,13 +344,21 @@ export function App() {
 
   const commandItems: CommandItem[] = useMemo(
     () => [
+      {
+        id: 'act-ask-ai',
+        code: '00',
+        group: 'AI TWIN & JD FIT',
+        label: 'Ask AI Digital Twin / Instant JD Fit Matcher (/)',
+        hint: aiProbe.label,
+        onSelect: () => setAskAiOpen(true),
+      },
       ...FLAGSHIP_WORKS.map((w, idx) => ({
         id: `work-${w.id}`,
         code: `0${idx + 1}`,
         group: 'LIVE APPS',
         label: `${w.title} ${w.version} — ${w.highlightMetric} ↗`,
         hint: w.ciBadge,
-        onSelect: () => window.open(w.liveUrl, '_blank'),
+        onSelect: () => openLightboxWithTransition(w.id),
       })),
       {
         id: 'act-theme',
@@ -189,16 +371,16 @@ export function App() {
       {
         id: 'act-audio',
         code: '08',
-        group: 'AUDIO DSP',
-        label: audioOn ? 'Mute Ambient Synth & FFT' : 'Engage Ambient Harmonic Synth & FFT',
-        hint: 'WEB AUDIO',
+        group: 'SPATIAL AUDIO',
+        label: audioOn ? 'Mute Stereo Ambient Synth & FFT' : 'Engage Stereo Ambient Synth & FFT',
+        hint: '3D STEREO PAN',
         onSelect: () => handleToggleAudio(),
       },
       {
         id: 'act-inspector',
         code: '09',
         group: '2026 APIS',
-        label: 'Inspect WebGPU / 2026 Hardware Telemetry',
+        label: 'Inspect 11 Platform APIs & Fluid / WebGPU Engines',
         hint: 'POPOVER API',
         onSelect: () => {
           const el = document.getElementById('platform-inspector') as
@@ -236,16 +418,31 @@ export function App() {
         onSelect: () => setZaloModalOpen(true),
       },
     ],
-    [audioOn, handleThemeSwitch, handleToggleAudio, scrollToSection, theme]
+    [
+      aiProbe.label,
+      audioOn,
+      handleThemeSwitch,
+      handleToggleAudio,
+      openLightboxWithTransition,
+      scrollToSection,
+      theme,
+    ]
   );
 
   return (
     <div className="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
       <LiquidGlassFilter />
       <WebGpuAmbientField
+        enabled={particlesEnabled}
         theme={theme}
         scrollVelocityRef={scrollVelocityRef}
         onTelemetryChange={setAmbientTelemetry}
+      />
+      <NavierStokesFluidCanvas
+        enabled={fluidEnabled}
+        theme={theme}
+        accentHex={effectiveAccentHex}
+        onTelemetryChange={setFluidTelemetry}
       />
       <div className="grain-overlay" />
       <MagneticCursor />
@@ -259,7 +456,7 @@ export function App() {
       {/* FLOATING APPLE 2026 LIQUID GLASS NAVIGATION DOCK                      */}
       {/* ===================================================================== */}
       <header className="fixed top-4 left-0 right-0 z-50 px-3 sm:px-4 pointer-events-none">
-        <div className="max-w-[1160px] mx-auto flex items-center justify-between px-3.5 sm:px-5 h-12 rounded-full liquid-glass pointer-events-auto">
+        <div className="max-w-[1160px] mx-auto flex items-center justify-between px-3 sm:px-5 h-12 rounded-full liquid-glass pointer-events-auto">
           <a href="#top" className="flex items-center gap-2 shrink-0">
             <span
               style={{
@@ -273,7 +470,7 @@ export function App() {
             </span>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-[var(--fg-secondary)]">
+          <nav className="hidden md:flex items-center gap-5 text-xs font-medium text-[var(--fg-secondary)]">
             <button
               type="button"
               onClick={() => scrollToSection('sec-works')}
@@ -304,14 +501,79 @@ export function App() {
             </button>
           </nav>
 
-          <div className="flex items-center gap-1.5 font-mono-tech text-[11px]">
+          <div className="flex items-center gap-1 sm:gap-1.5 font-mono-tech text-[11px]">
+            {/* Ask AI Digital Twin + JD Fit Matcher Pill */}
+            <button
+              type="button"
+              data-testid="btn-ask-ai"
+              onClick={() => {
+                tactileAudio.playLatch();
+                setAskAiOpen(true);
+              }}
+              style={{
+                borderColor: 'var(--accent)',
+                color: 'var(--fg-primary)',
+                backgroundColor: 'var(--accent-soft)',
+              }}
+              className="px-2 sm:px-2.5 py-1 rounded-full border font-semibold flex items-center gap-1.5 hover:opacity-90 transition cursor-pointer"
+            >
+              <span
+                style={{ backgroundColor: 'var(--accent)' }}
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+              />
+              <span className="hidden sm:inline">Ask AI</span>
+              <span className="sm:hidden">AI</span>
+            </button>
+
+            {/* Browser-Native Web Speech API Voice Pilot */}
+            <button
+              type="button"
+              data-testid="btn-voice-pilot"
+              onClick={handleToggleVoice}
+              disabled={!speechSupported}
+              aria-label={voiceListening ? 'Stop voice pilot' : 'Start voice command pilot'}
+              title={
+                speechSupported
+                  ? voiceListening
+                    ? 'Voice Listening...'
+                    : 'Voice Ready (EN / VI)'
+                  : 'Web Speech API Unavailable'
+              }
+              style={{
+                borderColor: voiceListening ? 'var(--accent)' : 'var(--hairline)',
+                color: voiceListening
+                  ? 'var(--accent)'
+                  : speechSupported
+                  ? 'var(--fg-secondary)'
+                  : 'var(--fg-muted)',
+              }}
+              className={`hidden sm:flex w-7 h-7 rounded-full border items-center justify-center transition ${
+                speechSupported
+                  ? 'hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] cursor-pointer'
+                  : 'opacity-45 cursor-not-allowed'
+              }`}
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                aria-hidden="true"
+              >
+                <rect x="5.5" y="1.75" width="5" height="8" rx="2.5" />
+                <path d="M3.25 7.5a4.75 4.75 0 0 0 9.5 0M8 12.25v2.25" strokeLinecap="round" />
+              </svg>
+            </button>
+
             {/* Minimalist Animated Sound Wave Toggle */}
             <button
               type="button"
               data-testid="btn-audio-toggle"
               onClick={handleToggleAudio}
               aria-label={audioOn ? 'Mute ambient synth' : 'Enable ambient synth'}
-              title={audioOn ? 'Audio FFT: Live' : 'Audio FFT: Off'}
+              title={audioOn ? 'Stereo Audio FFT: Live' : 'Stereo Audio FFT: Off'}
               className="w-7 h-7 rounded-full border border-[var(--hairline)] hover:border-[var(--hairline-strong)] flex items-center justify-center gap-[2px] transition cursor-pointer"
             >
               {[0.42, 0.88, 0.58, 1.0, 0.48].map((h, i) => (
@@ -333,19 +595,19 @@ export function App() {
               data-testid="btn-gpu-inspector"
               popoverTarget="platform-inspector"
               onClick={() => tactileAudio.playTick(1520)}
-              className="gpu-anchor-btn px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] flex items-center gap-1.5 transition cursor-pointer"
+              className="gpu-anchor-btn px-2 sm:px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] flex items-center gap-1.5 transition cursor-pointer"
             >
               <span
                 style={{
                   backgroundColor:
-                    ambientTelemetry.backend === 'webgpu'
+                    ambientTelemetry.backend === 'webgpu' || fluidTelemetry.active
                       ? 'var(--signal-ok)'
                       : 'var(--signal-warn)',
                 }}
                 className="w-1.5 h-1.5 rounded-full shrink-0"
               />
-              <span className="hidden sm:inline">GPU / 2026 APIs</span>
-              <span className="sm:hidden">GPU</span>
+              <span className="hidden lg:inline">GPU / 2026 APIs</span>
+              <span className="lg:hidden">GPU</span>
             </button>
 
             <button
@@ -363,7 +625,7 @@ export function App() {
             <button
               type="button"
               data-testid="btn-theme-morph"
-              onClick={handleThemeSwitch}
+              onClick={(ev) => handleThemeSwitch(ev)}
               aria-label="Toggle theme"
               className="px-2 sm:px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition cursor-pointer"
             >
@@ -384,21 +646,48 @@ export function App() {
             </button>
           </div>
         </div>
+
+        {/* Live Voice Pilot Transcript Pill */}
+        {(voiceListening || voiceTranscript) && (
+          <div className="mt-2 flex justify-center pointer-events-none">
+            <div className="liquid-glass px-3.5 py-1.5 rounded-full font-mono-tech text-[11px] text-[var(--fg-primary)] flex items-center gap-2">
+              <span
+                style={{ backgroundColor: 'var(--accent)' }}
+                className="w-2 h-2 rounded-full animate-pulse"
+              />
+              <span>{voiceTranscript}</span>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* Native Top-Layer Hardware Inspector Popover */}
+      {/* Native Top-Layer Hardware Inspector Popover (11 Live 2026 APIs) */}
       <PlatformInspectorPopover
         fps={fps}
         ambientTelemetry={ambientTelemetry}
+        fluidTelemetry={fluidTelemetry}
+        aiProbe={aiProbe}
+        fluidEnabled={fluidEnabled}
+        particlesEnabled={particlesEnabled}
         audioOn={audioOn}
+        accentHex={effectiveAccentHex}
+        onToggleFluid={() => {
+          tactileAudio.playLatch();
+          setFluidEnabled((v) => !v);
+        }}
+        onToggleParticles={() => {
+          tactileAudio.playLatch();
+          setParticlesEnabled((v) => !v);
+        }}
         onToggleAudio={handleToggleAudio}
+        onAccentChange={setCustomAccentHex}
       />
 
       <main id="top" className="relative z-10">
         {/* =================================================================== */}
         {/* 01 // ULTRA-CLEAN VISUAL HERO (ZERO PROSE PARAGRAPHS)               */}
         {/* =================================================================== */}
-        <section className="hero-ambient pt-24 pb-16 sm:pt-32 sm:pb-20 px-5 sm:px-8">
+        <section className="hero-ambient pt-24 pb-14 sm:pt-32 sm:pb-20 px-5 sm:px-8">
           <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left 7 Cols: Pure Signal Kinetic Typography & Keywords */}
             <div className="lg:col-span-7 space-y-7">
@@ -462,26 +751,30 @@ export function App() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => scrollToSection('sec-dossier')}
+                  onClick={() => {
+                    tactileAudio.playLatch();
+                    setAskAiOpen(true);
+                  }}
                   className="px-5 py-3 rounded-full border border-[var(--hairline-strong)] bg-[var(--bg-elevated)] text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:border-[var(--accent)] transition cursor-pointer"
+                >
+                  <GlyphDecodeText text={lang === 'vi' ? 'AI Twin & Chấm JD' : 'AI Twin · JD Fit'} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('sec-dossier')}
+                  className="px-5 py-3 rounded-full border border-[var(--hairline)] text-xs sm:text-sm font-medium text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] transition cursor-pointer"
                 >
                   <GlyphDecodeText text={lang === 'vi' ? 'Tải CV PDF' : 'CV Dossier'} />
                 </button>
-                <a
-                  href="https://github.com/tvt987"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-5 py-3 rounded-full border border-[var(--hairline)] text-xs sm:text-sm font-medium text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] transition"
-                >
-                  <GlyphDecodeText text="GitHub ↗" />
-                </a>
               </div>
             </div>
 
-            {/* Right 5 Cols: Floating Frameless Audio-Reactive WebGL2 3D Ferrofluid Sculpture */}
+            {/* Right 5 Cols: Floating Frameless Audio-Reactive WebGL2 3D Ferrofluid + GLSL Tuner */}
             <div className="lg:col-span-5 h-[390px] sm:h-[460px] lg:h-[510px]">
               <WebGLMonolithCanvas
                 theme={theme}
+                accentHex={effectiveAccentHex}
+                onAccentChange={setCustomAccentHex}
                 scrollProgressRef={scrollProgressRef}
                 scrollVelocityRef={scrollVelocityRef}
                 onFpsSample={setFps}
@@ -511,10 +804,13 @@ export function App() {
               </div>
             ))}
           </div>
+
+          {/* 1-Row Live GitHub Engineering Pulse Strip */}
+          <GitHubPulseBar />
         </section>
 
         {/* =================================================================== */}
-        {/* 02 // VISUAL FLAGSHIP GALLERY (6 LIVE APPS WITH 3D TILT + LIGHTBOX) */}
+        {/* 02 // VISUAL FLAGSHIP GALLERY (3D TILT + VIEW TRANSITION + SANDBOX) */}
         {/* =================================================================== */}
         <section id="sec-works" className="py-16 sm:py-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
           <div className="max-w-[1200px] mx-auto">
@@ -559,7 +855,8 @@ export function App() {
                   key={item.id}
                   item={item}
                   lang={lang}
-                  onInspect={(work) => setLightboxId(work.id)}
+                  isTransitionTarget={transitionCardId === item.id}
+                  onInspect={(work) => openLightboxWithTransition(work.id)}
                 />
               ))}
             </div>
@@ -775,7 +1072,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>WebGPU WGSL · WebGL2 SDF · Liquid Glass · View Transitions</span>
+          <span>Navier-Stokes FBO · WebGPU WGSL · Gemini Nano · Liquid Glass · v5.0</span>
         </div>
       </footer>
 
@@ -784,14 +1081,23 @@ export function App() {
         works={FLAGSHIP_WORKS}
         onScrollToSection={scrollToSection}
         onOpenCommandPalette={() => setCmdOpen(true)}
+        onOpenAskAi={() => setAskAiOpen(true)}
       />
 
-      {/* Instant Liquid Glass Flagship Lightbox */}
+      {/* Ask AI Digital Twin & Instant JD Fit Matcher Modal */}
+      <AskTinhModal
+        open={askAiOpen}
+        lang={lang}
+        onClose={() => setAskAiOpen(false)}
+        onEngineProbe={setAiProbe}
+      />
+
+      {/* Shared-Element View Transition Lightbox + Live Interactive Sandbox */}
       <FlagshipLightbox
         items={FLAGSHIP_WORKS}
         activeId={lightboxId}
         lang={lang}
-        onClose={() => setLightboxId(null)}
+        onClose={closeLightboxWithTransition}
         onSelectId={setLightboxId}
       />
 

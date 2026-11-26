@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import {
+  ACCENT_SWATCHES,
+  hexToRgb01,
+  isEyeDropperSupported,
+  pickColorWithEyeDropper,
+} from '../engines/accentEngine';
 import { ambientAudio } from '../engines/ambientAudio';
 import { tactileAudio } from '../engines/tactileAudio';
 import type { AtelierTheme } from '../engines/themeTransition';
 
 interface WebGLMonolithCanvasProps {
   theme: AtelierTheme;
+  accentHex: string;
+  onAccentChange: (hex: string | null) => void;
   scrollProgressRef: React.MutableRefObject<number>;
   scrollVelocityRef: React.MutableRefObject<number>;
   onFpsSample?: (fps: number) => void;
@@ -30,6 +38,9 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform float u_paper;
   uniform float u_morph;
   uniform float u_audio;
+  uniform vec3 u_accent;
+  uniform float u_iridescence;
+  uniform float u_ripple;
   varying vec2 vUv;
 
   mat2 rot(float a) {
@@ -90,7 +101,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     vec3 fPos = q;
     fPos.xy *= rot(0.35 * sin(u_time * 0.48));
     float boxFrame = sdBoxFrame(fPos, vec3(0.86 + audioPulse * 0.22), 0.08);
-    float innerSphere = length(q) - (0.50 + audioPulse * 0.28) + (0.04 + u_audio * 0.035) * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
+    float innerSphere = length(q) - (0.50 + audioPulse * 0.28) + (0.04 + u_audio * 0.035) * u_ripple * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
     float framePreset = opSmoothUnion(boxFrame, innerSphere, 0.24);
 
     float dFluid = length(q) - (0.66 + audioPulse * 0.3);
@@ -109,7 +120,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     baseShape = mix(baseShape, dFluid, w12);
 
     float harmonic = 0.015 * sin(10.0 * q.x + u_time * 2.0) * cos(10.0 * q.y - u_time * 1.6) * sin(10.0 * q.z);
-    baseShape += harmonic * (1.0 + min(abs(u_velocity) * 0.05, 1.0) + u_audio * 2.6);
+    baseShape += harmonic * u_ripple * (1.0 + min(abs(u_velocity) * 0.05, 1.0) + u_audio * 2.6);
 
     vec3 cursorOrbPos = vec3((u_mouse.x - 0.5) * 2.0, (u_mouse.y - 0.5) * 1.8, 0.45);
     float cursorDroplet = length(p - cursorOrbPos) - 0.23;
@@ -164,8 +175,8 @@ const FRAGMENT_SHADER = /* glsl */ `
 
     float centerGlow = exp(-rDist * 2.3);
     bg += mix(
-      vec3(1.0, 0.30, 0.02) * centerGlow * (0.16 + u_audio * 0.24),
-      vec3(0.85, 0.24, 0.02) * centerGlow * (0.08 + u_audio * 0.14),
+      u_accent * centerGlow * (0.16 + u_audio * 0.24),
+      u_accent * centerGlow * (0.08 + u_audio * 0.14),
       u_paper
     );
 
@@ -207,17 +218,17 @@ const FRAGMENT_SHADER = /* glsl */ `
       vec3 gunmetal = vec3(0.11, 0.115, 0.13) + diffKey * vec3(0.38, 0.39, 0.42);
       gunmetal += diffFill * vec3(0.14, 0.16, 0.21);
       gunmetal += envBands * vec3(0.16, 0.17, 0.21) * (0.45 + 0.55 * fresnel);
-      gunmetal = mix(gunmetal, irid, fresnel * (0.34 + u_audio * 0.22));
-      gunmetal += fresnel * vec3(1.0, 0.31, 0.02) * (1.18 + u_audio * 0.72);
-      gunmetal += underCaustic * vec3(1.0, 0.26, 0.0) * (0.40 + u_audio * 0.25);
-      gunmetal += specBroad * vec3(1.0, 0.52, 0.24) * 0.48;
+      gunmetal = mix(gunmetal, irid, clamp(fresnel * (0.34 + u_audio * 0.22) * u_iridescence, 0.0, 0.92));
+      gunmetal += fresnel * u_accent * (1.18 + u_audio * 0.72);
+      gunmetal += underCaustic * u_accent * (0.40 + u_audio * 0.25);
+      gunmetal += specBroad * mix(u_accent, vec3(1.0, 0.78, 0.58), 0.45) * 0.48;
       gunmetal += specSharp * vec3(1.0, 0.97, 0.93) * 1.2;
       gunmetal *= mix(0.4, 1.0, ao);
 
       vec3 porcelain = vec3(0.78, 0.76, 0.72) + diffKey * vec3(0.26, 0.25, 0.23);
       porcelain += diffFill * vec3(0.10, 0.10, 0.11);
       porcelain -= (1.0 - ao) * 0.34;
-      porcelain = mix(porcelain, vec3(0.86, 0.23, 0.02), fresnel * (0.65 + u_audio * 0.3) + underCaustic * 0.24);
+      porcelain = mix(porcelain, u_accent, clamp(fresnel * (0.65 + u_audio * 0.3) * (0.55 + 0.45 * u_iridescence) + underCaustic * 0.24, 0.0, 0.92));
       porcelain += specSharp * vec3(1.0) * 0.85;
 
       col = mix(gunmetal, porcelain, u_paper);
@@ -236,6 +247,8 @@ const PRESETS = [
 
 export function WebGLMonolithCanvas({
   theme,
+  accentHex,
+  onAccentChange,
   scrollProgressRef,
   scrollVelocityRef,
   onFpsSample,
@@ -243,11 +256,37 @@ export function WebGLMonolithCanvas({
   const stageRef = useRef<HTMLDivElement | null>(null);
   const targetPaperRef = useRef<number>(theme === 'paper' ? 1 : 0);
   const targetMorphRef = useRef<number>(0);
+  const targetAccentRef = useRef<[number, number, number]>(hexToRgb01(accentHex));
+  const targetIridescenceRef = useRef<number>(1.0);
+  const targetRippleRef = useRef<number>(1.0);
+  const targetSpeedRef = useRef<number>(1.0);
+
   const [activePreset, setActivePreset] = useState<number>(0);
+  const [tunerOpen, setTunerOpen] = useState<boolean>(false);
+  const [iridescence, setIridescence] = useState<number>(1.0);
+  const [ripple, setRipple] = useState<number>(1.0);
+  const [orbitSpeed, setOrbitSpeed] = useState<number>(1.0);
+  const eyeDropperAvailable = isEyeDropperSupported();
 
   useEffect(() => {
     targetPaperRef.current = theme === 'paper' ? 1 : 0;
   }, [theme]);
+
+  useEffect(() => {
+    targetAccentRef.current = hexToRgb01(accentHex);
+  }, [accentHex]);
+
+  useEffect(() => {
+    targetIridescenceRef.current = iridescence;
+  }, [iridescence]);
+
+  useEffect(() => {
+    targetRippleRef.current = ripple;
+  }, [ripple]);
+
+  useEffect(() => {
+    targetSpeedRef.current = orbitSpeed;
+  }, [orbitSpeed]);
 
   useEffect(() => {
     const container = stageRef.current;
@@ -280,9 +319,10 @@ export function WebGLMonolithCanvas({
         const h = (fallbackCanvas.height = container.clientHeight || 520);
         const isPaper = targetPaperRef.current > 0.5;
         const audio = ambientAudio.getBassEnergy();
+        const [r, g, b] = targetAccentRef.current;
         ctx.fillStyle = isPaper ? '#F1EFEA' : '#0B0C10';
         ctx.fillRect(0, 0, w, h);
-        ctx.strokeStyle = isPaper ? '#D93B00' : '#FF4D00';
+        ctx.strokeStyle = `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
         ctx.lineWidth = 1.6 + audio * 1.4;
         for (let i = 0; i < 6; i++) {
           ctx.beginPath();
@@ -291,7 +331,7 @@ export function WebGLMonolithCanvas({
             h * 0.5,
             70 + i * 22 + audio * 18,
             40 + i * 14 + audio * 10,
-            t * 0.014 + i * 0.4,
+            t * 0.014 * targetSpeedRef.current + i * 0.4,
             0,
             Math.PI * 2
           );
@@ -321,15 +361,19 @@ export function WebGLMonolithCanvas({
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
+    const [initR, initG, initB] = targetAccentRef.current;
     const uniforms = {
       u_resolution: { value: new THREE.Vector2(initW * dpr, initH * dpr) },
       u_mouse: { value: new THREE.Vector2(0.62, 0.58) },
-      u_time: { value: 0 },
+      u_time: { value: 1.4 },
       u_scroll: { value: 0 },
       u_velocity: { value: 0 },
       u_paper: { value: targetPaperRef.current },
       u_morph: { value: 0 },
       u_audio: { value: 0 },
+      u_accent: { value: new THREE.Vector3(initR, initG, initB) },
+      u_iridescence: { value: targetIridescenceRef.current },
+      u_ripple: { value: targetRippleRef.current },
     };
 
     const material = new THREE.ShaderMaterial({
@@ -367,18 +411,24 @@ export function WebGLMonolithCanvas({
     });
     resizeObserver.observe(container);
 
-    const startTime = performance.now();
+    let lastNow = performance.now();
     let frameCounter = 0;
-    let lastFpsStamp = startTime;
+    let lastFpsStamp = lastNow;
+    let smoothSpeed = 1.0;
 
     const renderLoop = (now: number) => {
       if (disposed) return;
       rafId = requestAnimationFrame(renderLoop);
       if (document.hidden || !renderer) return;
 
-      const audioEnergy = ambientAudio.getBassEnergy();
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastNow) * 0.001));
+      lastNow = now;
+      smoothSpeed += (targetSpeedRef.current - smoothSpeed) * 0.1;
 
-      uniforms.u_time.value = (now - startTime) * 0.001 + 1.4;
+      const audioEnergy = ambientAudio.getBassEnergy();
+      const [ar, ag, ab] = targetAccentRef.current;
+
+      uniforms.u_time.value += dt * smoothSpeed;
       uniforms.u_mouse.value.x += (pointerTarget.x - uniforms.u_mouse.value.x) * 0.08;
       uniforms.u_mouse.value.y += (pointerTarget.y - uniforms.u_mouse.value.y) * 0.08;
       uniforms.u_scroll.value += (scrollProgressRef.current - uniforms.u_scroll.value) * 0.09;
@@ -386,6 +436,11 @@ export function WebGLMonolithCanvas({
       uniforms.u_paper.value += (targetPaperRef.current - uniforms.u_paper.value) * 0.09;
       uniforms.u_morph.value += (targetMorphRef.current - uniforms.u_morph.value) * 0.075;
       uniforms.u_audio.value += (audioEnergy - uniforms.u_audio.value) * 0.16;
+      uniforms.u_accent.value.x += (ar - uniforms.u_accent.value.x) * 0.14;
+      uniforms.u_accent.value.y += (ag - uniforms.u_accent.value.y) * 0.14;
+      uniforms.u_accent.value.z += (ab - uniforms.u_accent.value.z) * 0.14;
+      uniforms.u_iridescence.value += (targetIridescenceRef.current - uniforms.u_iridescence.value) * 0.14;
+      uniforms.u_ripple.value += (targetRippleRef.current - uniforms.u_ripple.value) * 0.14;
 
       renderer.render(scene, camera);
 
@@ -411,11 +466,137 @@ export function WebGLMonolithCanvas({
     };
   }, [onFpsSample, scrollProgressRef, scrollVelocityRef]);
 
+  const handleEyeDropper = async () => {
+    tactileAudio.playLatch();
+    const picked = await pickColorWithEyeDropper();
+    if (picked) {
+      onAccentChange(picked);
+    }
+  };
+
+  const handleReset = () => {
+    tactileAudio.playTick(1280);
+    setIridescence(1.0);
+    setRipple(1.0);
+    setOrbitSpeed(1.0);
+    onAccentChange(null);
+  };
+
   return (
     <div className="relative w-full h-full min-h-[380px] lg:min-h-[500px] rounded-[24px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)] shadow-[var(--card-shadow)]">
       <div ref={stageRef} data-cursor="SDF 3D" className="absolute inset-0 z-0" />
 
-      {/* Minimal Floating Liquid Glass Morph Controls */}
+      {/* Floating GLSL Uniform Tuner & EyeDropper Micro-Popover */}
+      {tunerOpen && (
+        <div
+          data-testid="shader-tuner-panel"
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 w-[min(300px,calc(100%-24px))] p-3.5 rounded-2xl liquid-glass font-mono-tech text-[10.5px] space-y-3 text-[var(--fg-primary)]"
+        >
+          <div className="flex items-center justify-between border-b border-[var(--hairline)] pb-2">
+            <span className="font-bold tracking-wider uppercase">GLSL UNIFORMS</span>
+            <button
+              type="button"
+              data-testid="btn-shader-reset"
+              onClick={handleReset}
+              className="text-[10px] text-[var(--fg-muted)] hover:text-[var(--accent)] transition cursor-pointer"
+            >
+              RESET
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block space-y-1">
+              <div className="flex justify-between text-[var(--fg-secondary)]">
+                <span>IRIDESCENCE</span>
+                <span className="text-[var(--fg-primary)]">{iridescence.toFixed(1)}x</span>
+              </div>
+              <input
+                type="range"
+                data-testid="slider-iridescence"
+                min={0}
+                max={2.4}
+                step={0.1}
+                value={iridescence}
+                onChange={(e) => setIridescence(Number.parseFloat(e.target.value))}
+                className="w-full accent-[var(--accent)] h-1 cursor-pointer"
+              />
+            </label>
+
+            <label className="block space-y-1">
+              <div className="flex justify-between text-[var(--fg-secondary)]">
+                <span>RIPPLE</span>
+                <span className="text-[var(--fg-primary)]">{ripple.toFixed(1)}x</span>
+              </div>
+              <input
+                type="range"
+                data-testid="slider-ripple"
+                min={0}
+                max={2.6}
+                step={0.1}
+                value={ripple}
+                onChange={(e) => setRipple(Number.parseFloat(e.target.value))}
+                className="w-full accent-[var(--accent)] h-1 cursor-pointer"
+              />
+            </label>
+
+            <label className="block space-y-1">
+              <div className="flex justify-between text-[var(--fg-secondary)]">
+                <span>ORBIT SPEED</span>
+                <span className="text-[var(--fg-primary)]">{orbitSpeed.toFixed(1)}x</span>
+              </div>
+              <input
+                type="range"
+                data-testid="slider-speed"
+                min={0.2}
+                max={2.4}
+                step={0.1}
+                value={orbitSpeed}
+                onChange={(e) => setOrbitSpeed(Number.parseFloat(e.target.value))}
+                className="w-full accent-[var(--accent)] h-1 cursor-pointer"
+              />
+            </label>
+          </div>
+
+          {/* Dynamic Accent Swatches + EyeDropper API */}
+          <div className="pt-2 border-t border-[var(--hairline)] flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              {ACCENT_SWATCHES.map((sw) => {
+                const active = accentHex.toUpperCase() === sw.hex;
+                return (
+                  <button
+                    key={sw.hex}
+                    type="button"
+                    data-testid={`accent-swatch-${sw.name.toLowerCase()}`}
+                    aria-label={`Accent ${sw.name}`}
+                    onClick={() => {
+                      tactileAudio.playTick(1480);
+                      onAccentChange(sw.hex);
+                    }}
+                    style={{
+                      backgroundColor: sw.hex,
+                      boxShadow: active ? '0 0 0 2px var(--fg-primary)' : undefined,
+                    }}
+                    className="w-4 h-4 rounded-full transition-transform hover:scale-110 cursor-pointer"
+                  />
+                );
+              })}
+            </div>
+
+            {eyeDropperAvailable && (
+              <button
+                type="button"
+                data-testid="btn-eyedropper"
+                onClick={() => void handleEyeDropper()}
+                className="px-2 py-0.5 rounded-full border border-[var(--hairline)] hover:border-[var(--accent)] text-[10px] text-[var(--fg-primary)] transition cursor-pointer"
+              >
+                Pick
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Minimal Floating Liquid Glass Morph + Tune Controls */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 p-1 rounded-full liquid-glass">
         {PRESETS.map((preset) => {
           const selected = activePreset === preset.id;
@@ -433,12 +614,30 @@ export function WebGLMonolithCanvas({
                 backgroundColor: selected ? 'var(--fg-primary)' : 'transparent',
                 color: selected ? 'var(--bg-primary)' : 'var(--fg-secondary)',
               }}
-              className="px-3.5 py-1 rounded-full font-mono-tech text-[11px] font-semibold tracking-wide transition cursor-pointer"
+              className="px-3 py-1 rounded-full font-mono-tech text-[11px] font-semibold tracking-wide transition cursor-pointer"
             >
               {preset.label}
             </button>
           );
         })}
+
+        <span aria-hidden="true" className="w-px h-3.5 bg-[var(--hairline-strong)] mx-0.5" />
+
+        <button
+          type="button"
+          data-testid="btn-shader-tune"
+          onClick={() => {
+            tactileAudio.playTick(1520);
+            setTunerOpen((v) => !v);
+          }}
+          style={{
+            backgroundColor: tunerOpen ? 'var(--accent)' : 'transparent',
+            color: tunerOpen ? '#ffffff' : 'var(--fg-secondary)',
+          }}
+          className="px-2.5 py-1 rounded-full font-mono-tech text-[11px] font-semibold tracking-wide hover:text-[var(--fg-primary)] transition cursor-pointer"
+        >
+          Tune
+        </button>
       </div>
     </div>
   );

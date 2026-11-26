@@ -193,6 +193,8 @@ export interface PlatformCapabilities {
   scrollDrivenAnimations: boolean;
   speculationRules: boolean;
   webAudio: boolean;
+  eyeDropper: boolean;
+  speechRecognition: boolean;
 }
 
 export function detectPlatformCapabilities(): PlatformCapabilities {
@@ -223,6 +225,15 @@ export function detectPlatformCapabilities(): PlatformCapabilities {
     }
   }
 
+  const winAny = hasWin
+    ? (window as unknown as {
+        webkitAudioContext?: unknown;
+        EyeDropper?: unknown;
+        SpeechRecognition?: unknown;
+        webkitSpeechRecognition?: unknown;
+      })
+    : {};
+
   return {
     webgpuApi: hasNav && 'gpu' in navigator,
     webgl2,
@@ -232,9 +243,11 @@ export function detectPlatformCapabilities(): PlatformCapabilities {
     anchorPositioning: hasCss && CSS.supports('anchor-name', '--gpu-inspector-anchor'),
     scrollDrivenAnimations: hasCss && CSS.supports('animation-timeline', 'view()'),
     speculationRules,
-    webAudio:
+    webAudio: hasWin && ('AudioContext' in window || Boolean(winAny.webkitAudioContext)),
+    eyeDropper: hasWin && typeof winAny.EyeDropper === 'function',
+    speechRecognition:
       hasWin &&
-      ('AudioContext' in window ||
-        Boolean((window as unknown as { webkitAudioContext?: unknown }).webkitAudioContext)),
+      (typeof winAny.SpeechRecognition === 'function' ||
+        typeof winAny.webkitSpeechRecognition === 'function'),
   };
 }

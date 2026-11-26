@@ -7,9 +7,15 @@ interface FlagshipCardProps {
   item: FlagshipWorkItem;
   lang: 'en' | 'vi';
   onInspect: (item: FlagshipWorkItem) => void;
+  isTransitionTarget?: boolean;
 }
 
-export function FlagshipCard({ item, lang, onInspect }: FlagshipCardProps) {
+export function FlagshipCard({
+  item,
+  lang,
+  onInspect,
+  isTransitionTarget = false,
+}: FlagshipCardProps) {
   const cardRef = useRef<HTMLElement | null>(null);
   const imgSrc = `./${item.previewImage}`;
 
@@ -50,7 +56,14 @@ export function FlagshipCard({ item, lang, onInspect }: FlagshipCardProps) {
         <div className="flagship-iridescent-rim" aria-hidden="true" />
 
         {/* Edge-to-Edge Live Visual Preview */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg-panel)] border-b border-[var(--hairline)]">
+        <div
+          style={
+            isTransitionTarget
+              ? { viewTransitionName: 'active-flagship-visual' }
+              : undefined
+          }
+          className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg-panel)] border-b border-[var(--hairline)]"
+        >
           <a
             href={item.liveUrl}
             target="_blank"

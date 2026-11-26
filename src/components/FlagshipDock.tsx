@@ -7,6 +7,7 @@ interface FlagshipDockProps {
   works: FlagshipWorkItem[];
   onScrollToSection: (id: string) => void;
   onOpenCommandPalette: () => void;
+  onOpenAskAi: () => void;
 }
 
 const MONOGRAMS: Record<string, string> = {
@@ -31,6 +32,7 @@ export function FlagshipDock({
   works,
   onScrollToSection,
   onOpenCommandPalette,
+  onOpenAskAi,
 }: FlagshipDockProps) {
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
   const [mouseX, setMouseX] = useState<number | null>(null);
@@ -44,6 +46,15 @@ export function FlagshipDock({
   }));
 
   const utilityEntries: DockEntry[] = [
+    {
+      id: 'dock-ai',
+      monogram: 'AI',
+      tooltip: 'Ask AI Twin & JD Fit (/)',
+      onClick: () => {
+        tactileAudio.playLatch();
+        onOpenAskAi();
+      },
+    },
     {
       id: 'dock-lab',
       monogram: 'LAB',

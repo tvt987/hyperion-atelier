@@ -1,14 +1,21 @@
 /**
- * Zero-Asset Procedural Web Audio API Micro-Acoustics Synthesizer.
- * Generates mechanical Leica/Teenage-Engineering-inspired relay clicks and harmonic pulses.
+ * HYPERION ATELIER v5.0 — Zero-Asset Spatial Stereo Web Audio API Micro-Acoustics Synthesizer.
+ * Generates mechanical Leica/Teenage-Engineering-inspired relay clicks and harmonic pulses
+ * routed through StereoPannerNode (-0.65 left -> +0.65 right) tracking pointer azimuth.
  */
 
 class TactileAudioEngine {
   private ctx: AudioContext | null = null;
   private enabled = false;
+  private currentPan = 0;
 
   public isEnabled(): boolean {
     return this.enabled;
+  }
+
+  public setPointerPanX(normX01: number): void {
+    const clamped = Math.min(1, Math.max(0, normX01));
+    this.currentPan = (clamped * 2 - 1) * 0.65;
   }
 
   public toggle(): boolean {
@@ -30,7 +37,9 @@ class TactileAudioEngine {
   private ensureContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
     if (!this.ctx) {
-      const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      const Ctor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) return null;
       this.ctx = new Ctor();
     }
@@ -40,7 +49,22 @@ class TactileAudioEngine {
     return this.ctx;
   }
 
-  public playTick(freq = 1480): void {
+  private connectOutput(ctx: AudioContext, node: AudioNode, panOverride?: number): void {
+    const targetPan = Math.min(
+      0.65,
+      Math.max(-0.65, panOverride !== undefined ? panOverride : this.currentPan)
+    );
+    if (typeof ctx.createStereoPanner === 'function') {
+      const panner = ctx.createStereoPanner();
+      panner.pan.setValueAtTime(targetPan, ctx.currentTime);
+      node.connect(panner);
+      panner.connect(ctx.destination);
+    } else {
+      node.connect(ctx.destination);
+    }
+  }
+
+  public playTick(freq = 1480, panX?: number): void {
     if (!this.enabled) return;
     const ctx = this.ensureContext();
     if (!ctx) return;
@@ -62,13 +86,13 @@ class TactileAudioEngine {
 
     osc.connect(filter);
     filter.connect(gain);
-    gain.connect(ctx.destination);
+    this.connectOutput(ctx, gain, panX);
 
     osc.start(now);
     osc.stop(now + 0.018);
   }
 
-  public playLatch(): void {
+  public playLatch(panX?: number): void {
     if (!this.enabled) return;
     const ctx = this.ensureContext();
     if (!ctx) return;
@@ -85,7 +109,7 @@ class TactileAudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    this.connectOutput(ctx, gain, panX);
 
     osc.start(now);
     osc.stop(now + 0.045);
@@ -108,7 +132,7 @@ class TactileAudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.095);
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    this.connectOutput(ctx, gain);
 
     osc.start(now);
     osc.stop(now + 0.1);
@@ -128,7 +152,7 @@ class TactileAudioEngine {
       gain.gain.setValueAtTime(0.032, now + idx * 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16 + idx * 0.02);
       osc.connect(gain);
-      gain.connect(ctx.destination);
+      this.connectOutput(ctx, gain, idx === 0 ? -0.28 : 0.28);
       osc.start(now + idx * 0.02);
       osc.stop(now + 0.18 + idx * 0.02);
     });

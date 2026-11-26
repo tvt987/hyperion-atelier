@@ -12,6 +12,7 @@ interface HarmonicVoice {
 class AmbientAudioEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
+  private panner: StereoPannerNode | null = null;
   private filter: BiquadFilterNode | null = null;
   private lfo: OscillatorNode | null = null;
   private lfoGain: GainNode | null = null;
@@ -71,8 +72,16 @@ class AmbientAudioEngine {
       analyser.fftSize = 1024;
       analyser.smoothingTimeConstant = 0.82;
 
+      const panner =
+        typeof ctx.createStereoPanner === 'function' ? ctx.createStereoPanner() : null;
+
       filter.connect(masterGain);
-      masterGain.connect(analyser);
+      if (panner) {
+        masterGain.connect(panner);
+        panner.connect(analyser);
+      } else {
+        masterGain.connect(analyser);
+      }
       analyser.connect(ctx.destination);
 
       // Warm detuned D-sus2 / ninth architectural chord across 12 FFT bands
@@ -103,6 +112,7 @@ class AmbientAudioEngine {
       this.lfo = lfo;
       this.lfoGain = lfoGain;
       this.masterGain = masterGain;
+      this.panner = panner;
       this.analyser = analyser;
       this.voices = voices;
       this.freqBins = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
@@ -145,6 +155,12 @@ class AmbientAudioEngine {
 
   public toggle(): boolean {
     return this.setActive(!this.active);
+  }
+
+  public setSpatialPanX(normX01: number): void {
+    if (!this.panner || !this.ctx) return;
+    const pan = (Math.min(1, Math.max(0, normX01)) * 2 - 1) * 0.42;
+    this.panner.pan.setTargetAtTime(pan, this.ctx.currentTime, 0.12);
   }
 
   public getBassEnergy(): number {

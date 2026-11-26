@@ -267,6 +267,12 @@ html[lang="vi"] .hero-headline {
   z-index: 9999;
 }
 
+::view-transition-group(active-flagship-visual) {
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 10000;
+}
+
 /* Minimalist Hairline Utilities (kept for Lab & Modals) */
 .hairline-b {
   border-bottom: 1px solid var(--hairline);
