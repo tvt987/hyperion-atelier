@@ -788,7 +788,7 @@ export function App() {
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
               { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
               { value: '0.00%', labelEn: 'Double-Spend Leaks', labelVi: 'Lỗi Âm Kho' },
-              { value: '135+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
+              { value: '198+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
             ].map((m) => (
               <div
                 key={m.value}

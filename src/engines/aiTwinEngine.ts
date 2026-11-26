@@ -110,7 +110,7 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
       'ai', 'mcp', 'a2a', 'ag-ui', 'rag', 'bm25', 'rrf', 'vector', 'hnsw', 'langgraph',
       'agent', 'multi-agent', 'python', 'fastapi', 'qdrant', 'llm', 'verdict', 'gemini', 'nano',
     ],
-    metrics: ['0.99 Grounded Score', '-52% Token Cost', '384-d HNSW + BM25 RRF', '27/27 CI Green'],
+    metrics: ['0.99 Grounded Score', '-52% Token Cost', '384-d HNSW + BM25 RRF', '43/43 CI Green'],
     keywords: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'AG-UI SSE', 'LangGraph Fork', 'OTel GenAI'],
     actions: [
       { label: 'Launch Verdict Graph ↗', href: 'https://tvt987.github.io/verdict-graph/', accent: true },
@@ -133,13 +133,13 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: 'Six Production Live Flagships (135+ CI Green)',
+    title: 'Six Production Live Flagships (198+ CI Green)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
     ],
-    metrics: ['6 Live Web Apps', '135+ CI Tests Passing', '500K DuckDB-WASM Rows', 'WebGPU + Three.js PBR'],
-    keywords: ['Maison Véra v3.0', 'Atelier Canvas v3.0', 'Aether Acoustics', 'Nexus Lake', 'Verdict Graph', 'AegisPulse'],
+    metrics: ['6 Live Web Apps (v2–v3)', '198+ CI Tests Passing', '500K DuckDB-WASM Rows', 'WebGPU + Three.js PBR'],
+    keywords: ['Maison Véra v3.0', 'Atelier Canvas v3.0', 'Aether Acoustics v2.0', 'Nexus Lake v2.0', 'Verdict Graph v2.0', 'AegisPulse v2.0'],
     actions: [
       { label: 'Maison Véra v3.0 ↗', href: 'https://tvt987.github.io/maison-vera/', accent: true },
       { label: 'Atelier Canvas v3.0 ↗', href: 'https://tvt987.github.io/atelier-canvas/' },
@@ -316,7 +316,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 6 live production apps (135+ CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 6 live production apps (198+ CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
