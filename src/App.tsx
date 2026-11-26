@@ -210,8 +210,8 @@ export function App() {
         group: 'NAVIGATION',
         label:
           lang === 'vi'
-            ? 'Đi tới Các Hệ Thống Thực Chiến (Monograph Plates 01–04)'
-            : 'Jump to Selected Systems Monograph (Plates 01–04)',
+            ? 'Đi tới Các Hệ Thống Thực Chiến (Monograph Plates 01–06)'
+            : 'Jump to Selected Systems Monograph (Plates 01–06)',
         hint: 'SEC 04',
         onSelect: () => scrollToSection('sec-works'),
       },
@@ -258,6 +258,36 @@ export function App() {
         hint: 'GITHUB PAGES',
         onSelect: () => {
           window.open('https://tvt987.github.io/aegispulse-distributed-sre/', '_blank');
+        },
+      },
+      {
+        id: 'act-nexus-lake',
+        code: '07',
+        group: 'LIVE DEPLOYMENT',
+        label: 'Open Nexus Lake (DuckDB-WASM + Yjs CRDT + WebGPU + MCP) ↗',
+        hint: 'GITHUB PAGES',
+        onSelect: () => {
+          window.open('https://tvt987.github.io/nexus-lake/', '_blank');
+        },
+      },
+      {
+        id: 'act-verdict-graph',
+        code: '08',
+        group: 'LIVE DEPLOYMENT',
+        label: 'Open Verdict Graph (MCP × A2A × AG-UI + Time-Travel Debugger) ↗',
+        hint: 'GITHUB PAGES',
+        onSelect: () => {
+          window.open('https://tvt987.github.io/verdict-graph/', '_blank');
+        },
+      },
+      {
+        id: 'act-aether-acoustics',
+        code: '09',
+        group: 'LIVE DEPLOYMENT',
+        label: 'Open Aether Acoustics (3D PBR Store + Spatial Audio DSP) ↗',
+        hint: 'GITHUB PAGES',
+        onSelect: () => {
+          window.open('https://tvt987.github.io/aether-acoustics/', '_blank');
         },
       },
       {
@@ -729,7 +759,7 @@ export function App() {
               <div className="mt-8 p-4 hairline-box bg-[var(--bg-panel)] font-mono-tech text-[11px] space-y-1.5">
                 <div className="text-[var(--fg-muted)]">PRIMARY STACK MATRIX</div>
                 <div className="text-[var(--fg-primary)]">
-                  C# · .NET 8/10 · Dapper · SQL Server · PostgreSQL · Redis Lua · RabbitMQ · Polly · Keycloak OIDC · Python 3.12 · FastAPI · Qdrant · Hybrid RAG · Angular 19 · React 19 · TypeScript · Docker
+                  C# · .NET 8/10 · Dapper · SQL Server · PostgreSQL · Redis Lua · RabbitMQ · Polly · Keycloak OIDC · Python 3.12 · FastAPI · LangGraph · MCP / A2A / AG-UI · OpenTelemetry GenAI · DuckDB-WASM · Apache Arrow · Yjs CRDT · WebGPU WGSL · Three.js PBR · Web Audio DSP · Angular 19 · React 19 · TypeScript · Docker
                 </div>
               </div>
             </div>

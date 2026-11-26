@@ -40,6 +40,72 @@ export const MONOGRAPH_PLATES: MonographPlateItem[] = [
   },
   {
     plateNo: 'PLATE 02',
+    year: '2026',
+    domainTag: 'LOCAL-FIRST OLAP LAKEHOUSE & MCP BI WORKBENCH',
+    title: 'Nexus Lake — Collaborative DuckDB-WASM Lakehouse & WebGPU Workbench',
+    subtitleEn: 'Self-Hosted DuckDB-WASM + Apache Arrow + Yjs CRDT Multiplayer + WGSL Compute + Real TypeScript MCP Server',
+    subtitleVi: 'Kho dữ liệu SQL tại trình duyệt DuckDB-WASM + Yjs CRDT đa người dùng + WebGPU WGSL + MCP Server thật',
+    summaryEn:
+      'Zero-server thick-client analytics studio scanning 100K–500K Apache Arrow rows inside browser Web Workers via DuckDB-WASM, paired with lossless Yjs CRDT offline partition/merge labs, inspectable WGSL WebGPU scatter shaders, AG-UI generative BI widgets, 128-d IndexedDB semantic catalog search, and a standalone AST-guarded TypeScript MCP Server.',
+    summaryVi:
+      'Nền tảng phân tích OLAP không cần máy chủ truy vấn trực tiếp 100K–500K dòng Apache Arrow bằng DuckDB-WASM, tích hợp cộng tác không xung đột Yjs CRDT ngoại tuyến, biểu đồ dị thường WebGPU WGSL, trợ lý Generative BI chuẩn AG-UI và gói TypeScript MCP Server chặn ghi SQL bằng AST.',
+    metrics: [
+      { label: 'CLIENT-SIDE OLAP', value: '100K–500K ROWS' },
+      { label: 'CRDT MERGE DELTA', value: '166 BYTES' },
+      { label: 'CI SUITE (MCP+WEB)', value: '22 / 22 PASS' },
+    ],
+    stack: ['DuckDB-WASM', 'Apache Arrow', 'Yjs CRDT', 'WebGPU WGSL', 'AG-UI', 'MCP Server TS', 'React 19'],
+    liveUrl: 'https://tvt987.github.io/nexus-lake/',
+    repoUrl: 'https://github.com/tvt987/nexus-lake',
+    ciProof: '22/22 MCP Server + Web Vitest PASS (GitHub Actions)',
+    topologyNodes: ['Arrow IPC 500K', 'DuckDB-WASM SQL', 'Yjs CRDT Sync', 'WGSL + MCP/AG-UI'],
+  },
+  {
+    plateNo: 'PLATE 03',
+    year: '2026',
+    domainTag: 'AGENTIC PROTOCOL CONTROL PLANE & TIME-TRAVEL DEBUGGER',
+    title: 'Verdict Graph — Visual Multi-Agent Orchestrator & Protocol Debugger',
+    subtitleEn: 'MCP JSON-RPC 2.0 + A2A AgentCards + AG-UI SSE + Immutable LangGraph Checkpointer + OpenTelemetry GenAI',
+    subtitleVi: 'Trung tâm điều phối đa tác tử chuẩn MCP × A2A × AG-UI + Tua ngược Time-Travel Checkpoint + Thác vết OTel GenAI',
+    summaryEn:
+      'Polyglot FastAPI + React 19 multi-agent mission control featuring a cyclic 6-node execution DAG, real Human-in-the-Loop approval interrupts, indirect prompt-injection blocking (INJ-EXFIL-001), immutable checkpoint branching with side-by-side FinOps diff (+0.38 groundedness at -52% cost), and live MCP/A2A/AG-UI/OTel wire inspectors.',
+    summaryVi:
+      'Hệ thống điều khiển đa tác tử AI song runtime (FastAPI + React 19) sở hữu đồ thị thực thi có chu trình 6 nút, chốt duyệt Human-in-the-Loop, lá chắn chặn prompt injection (INJ-EXFIL-001), tách nhánh tua ngược checkpoint so sánh chi phí/độ trung thực và bộ soi gói tin MCP/A2A/AG-UI/OTel trực tiếp.',
+    metrics: [
+      { label: 'FORK GROUNDEDNESS', value: '0.61 -> 0.99' },
+      { label: 'TOKEN COST DELTA', value: '-52.2% USD' },
+      { label: 'POLYGLOT CI SUITE', value: '27 / 27 PASS' },
+    ],
+    stack: ['Python 3.12', 'FastAPI', 'LangGraph Pattern', 'MCP 2.0', 'A2A Protocol', 'AG-UI SSE', 'OTel GenAI'],
+    liveUrl: 'https://tvt987.github.io/verdict-graph/',
+    repoUrl: 'https://github.com/tvt987/verdict-graph',
+    ciProof: '27/27 Python Pytest + Vitest PASS (GitHub Actions)',
+    topologyNodes: ['Cyclic 6-Node DAG', 'MCP & A2A Wire', 'HITL & Guardrail', 'Time-Travel Fork'],
+  },
+  {
+    plateNo: 'PLATE 04',
+    year: '2026',
+    domainTag: 'LUXURY 3D E-COMMERCE & REAL-TIME SPATIAL AUDIO',
+    title: 'Aether Acoustics — 3D PBR Hardware Flagship & Spatial DSP Store',
+    subtitleEn: 'Three.js RoomEnvironment PBR 3D Configurator + Scroll Exploded Anatomy + Web Audio DSP + Idempotent Checkout',
+    subtitleVi: 'Cửa hàng âm thanh cao cấp 3D PBR thời gian thực + Giải phẫu linh kiện theo cuộn + Phòng nghe DSP + Thanh toán Idempotent',
+    summaryEn:
+      'Awwwards-grade commercial flagship store combining a procedural 5-layer CNC aluminum 3D monolith configurator (4 PBR finishes, scroll-choreographed exploded view via Lenis + GSAP), real-time Web Audio API Biquad/Convolver spatial audition lab, 6-SKU industrial catalog, idempotent promo voucher engine, and 3-step checkout with 3D metallic card & authenticity certificate.',
+    summaryVi:
+      'Website thương mại điện tử cao cấp tích hợp bộ tùy biến loa 3D PBR 5 lớp CNC thời gian thực (4 vật liệu kim loại, tách lớp theo nhịp cuộn Lenis + GSAP), phòng nghe thử Web Audio API DSP 60fps, danh mục 6 thiết bị vẽ đồ họa công nghiệp, nhân voucher chống trùng và quy trình checkout thẻ kim loại 3D xuất chứng nhận số.',
+    metrics: [
+      { label: '3D PBR ANATOMY', value: '5 KINEMATIC LAYERS' },
+      { label: 'SPATIAL AUDIO LAB', value: '3 LIVE DSP MODES' },
+      { label: 'COMMERCE CI SUITE', value: '17 / 17 PASS' },
+    ],
+    stack: ['React 19', 'Three.js PBR', 'Lenis + GSAP', 'Web Audio DSP', 'View Transitions', 'Zod', 'Vitest'],
+    liveUrl: 'https://tvt987.github.io/aether-acoustics/',
+    repoUrl: 'https://github.com/tvt987/aether-acoustics',
+    ciProof: '17/17 Cart, Voucher & Checkout Vitest PASS (GitHub Actions)',
+    topologyNodes: ['Three.js PBR 3D', 'Web Audio DSP', 'Idempotent Voucher', '3D Card + Cert'],
+  },
+  {
+    plateNo: 'PLATE 05',
     year: '2025–2026',
     domainTag: 'FLASH-SALE FINANCIAL INTEGRITY',
     title: 'High-Concurrency Voucher Redemption Engine',
@@ -60,7 +126,7 @@ export const MONOGRAPH_PLATES: MonographPlateItem[] = [
     topologyNodes: ['700+ POS Edge', 'Redis EVALSHA', 'Dapper StoredProc', 'RowVersion Commit'],
   },
   {
-    plateNo: 'PLATE 03',
+    plateNo: 'PLATE 06',
     year: '2025',
     domainTag: 'FAULT-TOLERANT PARTNER GATEWAY',
     title: 'Resilient Partner Integration BFF & Quorum DLQ',
@@ -79,27 +145,6 @@ export const MONOGRAPH_PLATES: MonographPlateItem[] = [
     repoUrl: 'https://github.com/tvt987/partner-integration-bff',
     ciProof: '54/54 WebApplicationFactory & Resilience Tests PASS',
     topologyNodes: ['Partner Webhook', 'Constant-Time Auth', 'Polly Circuit', 'RabbitMQ DLQ'],
-  },
-  {
-    plateNo: 'PLATE 04',
-    year: '2025–2026',
-    domainTag: 'GROUNDED ENTERPRISE APPLIED AI',
-    title: 'Hybrid Retail RAG Assistant & Abstention Engine',
-    subtitleEn: 'FastAPI + Qdrant Vector Search + Sparse Lexical Fusion + Citation Verification',
-    subtitleVi: 'Truy xuất lai FastAPI + Qdrant Vector + Đối chiếu từ khóa chính xác SKU & Kiểm chứng trích dẫn',
-    summaryEn:
-      'Eliminates dense-embedding SKU confusion on exact alphanumeric retail codes by fusing lexical retrieval with dense vector similarity, enforcing calibrated confidence thresholds, inline document citations, and deterministic extractive fallback whenever upstream LLM endpoints degrade.',
-    summaryVi:
-      'Khắc phục triệt để điểm mù mã SKU của vector thuần bằng kiến trúc truy xuất lai từ khóa + Qdrant dense embeddings, kiểm soát ngưỡng tự tin chống bịa đặt, gắn trích dẫn nguồn minh bạch và tự động chuyển sang trích xuất tất định khi LLM gặp sự cố.',
-    metrics: [
-      { label: 'SKU RECALL', value: '98.4%' },
-      { label: 'FAITHFULNESS', value: '99.2%' },
-      { label: 'PYTEST SUITE', value: '18 / 18 PASS' },
-    ],
-    stack: ['Python 3.12', 'FastAPI', 'Qdrant', 'LangChain LCEL', 'Pydantic v2', 'Pytest'],
-    repoUrl: 'https://github.com/tvt987/retail-rag-assistant',
-    ciProof: '18/18 Groundedness & Citation Suite PASS',
-    topologyNodes: ['PDF/MD Chunker', 'Qdrant + Lexical', 'Confidence Gate', 'Cited Synthesis'],
   },
 ];
 
