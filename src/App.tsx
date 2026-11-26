@@ -291,6 +291,26 @@ export function App() {
         },
       },
       {
+        id: 'act-atelier-canvas',
+        code: '10',
+        group: 'LIVE DEPLOYMENT',
+        label: 'Open Atelier Canvas (Figma-Class Design Studio + Dev Mode) ↗',
+        hint: 'GITHUB PAGES',
+        onSelect: () => {
+          window.open('https://tvt987.github.io/atelier-canvas/', '_blank');
+        },
+      },
+      {
+        id: 'act-maison-vera',
+        code: '11',
+        group: 'LIVE DEPLOYMENT',
+        label: 'Open Maison Véra (Editorial Luxury 3D E-Commerce Store) ↗',
+        hint: 'GITHUB PAGES',
+        onSelect: () => {
+          window.open('https://tvt987.github.io/maison-vera/', '_blank');
+        },
+      },
+      {
         id: 'act-lang',
         code: '07',
         group: 'LOCALIZATION',
