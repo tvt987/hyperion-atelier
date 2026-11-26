@@ -5,7 +5,21 @@
   --bg-primary: #060608;
   --bg-elevated: #0c0d11;
   --bg-panel: #12141a;
-  --bg-glass: rgba(12, 13, 17, 0.76);
+  --bg-glass: rgba(12, 13, 18, 0.72);
+  --glass-surface: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.085) 0%,
+    rgba(16, 18, 26, 0.78) 42%,
+    rgba(10, 11, 16, 0.84) 100%
+  );
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-specular: rgba(255, 255, 255, 0.28);
+  --glass-chroma-a: rgba(255, 77, 0, 0.22);
+  --glass-chroma-b: rgba(56, 189, 248, 0.18);
+  --glass-shadow:
+    0 20px 54px -20px rgba(0, 0, 0, 0.85),
+    0 1px 0 0 rgba(255, 255, 255, 0.24) inset,
+    0 -1px 0 0 rgba(255, 77, 0, 0.14) inset;
   --fg-primary: #f5f4f0;
   --fg-secondary: #9c9ca6;
   --fg-muted: #5d5f6b;
@@ -24,7 +38,21 @@
   --bg-primary: #f6f4ef;
   --bg-elevated: #ffffff;
   --bg-panel: #eeebe4;
-  --bg-glass: rgba(246, 244, 239, 0.82);
+  --bg-glass: rgba(246, 244, 239, 0.78);
+  --glass-surface: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(248, 246, 241, 0.8) 55%,
+    rgba(239, 236, 228, 0.86) 100%
+  );
+  --glass-border: rgba(12, 13, 16, 0.13);
+  --glass-specular: rgba(255, 255, 255, 0.96);
+  --glass-chroma-a: rgba(217, 59, 0, 0.16);
+  --glass-chroma-b: rgba(14, 165, 233, 0.14);
+  --glass-shadow:
+    0 18px 46px -22px rgba(12, 13, 16, 0.22),
+    0 1px 0 0 rgba(255, 255, 255, 0.96) inset,
+    0 -1px 0 0 rgba(217, 59, 0, 0.1) inset;
   --fg-primary: #0c0d10;
   --fg-secondary: #4e4f57;
   --fg-muted: #82838c;
@@ -97,7 +125,45 @@ html[lang="vi"] .hero-headline {
   font-variant-numeric: tabular-nums;
 }
 
-/* Native Scroll Progress Hairline */
+/* ============================================================================
+   APPLE 2026 "LIQUID GLASS" OPTICAL REFRACTION SURFACE
+   ============================================================================ */
+@layer components {
+  .liquid-glass {
+    position: relative;
+    background: var(--glass-surface);
+    backdrop-filter: blur(24px) saturate(185%);
+    -webkit-backdrop-filter: blur(24px) saturate(185%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .liquid-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      130deg,
+      var(--glass-specular) 0%,
+      var(--glass-chroma-b) 36%,
+      transparent 62%,
+      var(--glass-chroma-a) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.8;
+  }
+}
+
+/* ============================================================================
+   NATIVE 2026 CSS SCROLL-DRIVEN PROGRESS & VIEW REVEALS
+   ============================================================================ */
 @keyframes scroll-progress-grow {
   from {
     transform: scaleX(0);
@@ -119,7 +185,74 @@ html[lang="vi"] .hero-headline {
   }
 }
 
-/* View Transitions Circular Wipe */
+@keyframes view-card-reveal {
+  from {
+    opacity: 0.25;
+    transform: translateY(20px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-view-reveal {
+      animation: view-card-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+}
+
+/* ============================================================================
+   NATIVE HTML POPOVER API + CSS ANCHOR POSITIONING
+   ============================================================================ */
+.gpu-anchor-btn {
+  anchor-name: --gpu-inspector-anchor;
+}
+
+@keyframes popover-spring-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.platform-popover {
+  position: fixed;
+  margin: 0;
+  inset: auto;
+  top: 72px;
+  right: max(12px, calc((100vw - 1160px) / 2 + 12px));
+  left: auto;
+  z-index: 95;
+}
+
+@supports (position-anchor: --gpu-inspector-anchor) and (top: anchor(bottom)) {
+  @media (min-width: 640px) {
+    .platform-popover {
+      position-anchor: --gpu-inspector-anchor;
+      top: calc(anchor(bottom) + 12px);
+      right: anchor(right);
+      left: auto;
+    }
+  }
+}
+
+.platform-popover:popover-open {
+  display: block;
+  animation: popover-spring-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================================
+   VIEW TRANSITIONS CIRCULAR WIPE
+   ============================================================================ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -155,21 +288,25 @@ html[lang="vi"] .hero-headline {
   border: 1px solid var(--hairline);
 }
 
-/* Flagship Visual Gallery Card */
+/* ============================================================================
+   3D SPRING-TILT HOLOGRAPHIC FLAGSHIP CARDS
+   ============================================================================ */
 .flagship-card {
   position: relative;
   background: var(--bg-elevated);
   border: 1px solid var(--hairline);
   border-radius: 20px;
   overflow: hidden;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(0);
+  transform-style: preserve-3d;
   transition:
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 280ms ease,
     box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .flagship-card:hover {
-  transform: translateY(-5px);
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-5px);
   border-color: var(--hairline-strong);
   box-shadow: var(--card-shadow);
 }
@@ -192,12 +329,56 @@ html[lang="vi"] .hero-headline {
   opacity: 1;
 }
 
+.flagship-iridescent-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 280ms ease;
+  background: conic-gradient(
+    from var(--sheen-angle, 140deg),
+    transparent 0deg,
+    rgba(255, 77, 0, 0.55) 65deg,
+    rgba(56, 189, 248, 0.45) 135deg,
+    rgba(167, 139, 250, 0.4) 210deg,
+    transparent 290deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.flagship-card:hover .flagship-iridescent-rim {
+  opacity: 0.92;
+}
+
 .flagship-card .card-media {
   transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .flagship-card:hover .card-media {
   transform: scale(1.035);
+}
+
+/* Minimal Sound Wave Bar Pulse */
+@keyframes sound-bar-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.sound-bar-live {
+  transform-origin: center bottom;
+  animation: sound-bar-pulse 900ms ease-in-out infinite;
 }
 
 /* Subtle Atmospheric Backdrop Glow */

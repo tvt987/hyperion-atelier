@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { ambientAudio } from '../engines/ambientAudio';
 import { tactileAudio } from '../engines/tactileAudio';
 import type { AtelierTheme } from '../engines/themeTransition';
 
@@ -28,6 +29,7 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform float u_velocity;
   uniform float u_paper;
   uniform float u_morph;
+  uniform float u_audio;
   varying vec2 vUv;
 
   mat2 rot(float a) {
@@ -72,29 +74,32 @@ const FRAGMENT_SHADER = /* glsl */ `
     q.xz *= rot(u_time * 0.34 + mTilt.x + u_scroll * 1.8);
     q.yz *= rot(0.38 + u_time * 0.21 - mTilt.y);
 
+    float audioPulse = u_audio * 0.14;
+
     vec3 t1 = q;
     t1.xy *= rot(u_time * 0.52);
-    float ringOuter = sdTorus(t1, vec2(1.02, 0.11));
+    float ringOuter = sdTorus(t1, vec2(1.02 + audioPulse * 0.4, 0.11 + audioPulse * 0.12));
 
     vec3 t2 = q;
     t2.yz *= rot(-u_time * 0.64 + 0.9);
-    float ringInner = sdTorus(t2, vec2(0.68, 0.092));
+    float ringInner = sdTorus(t2, vec2(0.68, 0.092 + audioPulse * 0.1));
 
-    float coreOct = sdOctahedron(q, 0.52);
+    float coreOct = sdOctahedron(q, 0.52 + audioPulse * 0.35);
     float gyroPreset = opSmoothUnion(opSmoothUnion(ringOuter, ringInner, 0.22), coreOct, 0.28);
 
     vec3 fPos = q;
     fPos.xy *= rot(0.35 * sin(u_time * 0.48));
-    float boxFrame = sdBoxFrame(fPos, vec3(0.86), 0.08);
-    float innerSphere = length(q) - 0.50 + 0.04 * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
+    float boxFrame = sdBoxFrame(fPos, vec3(0.86 + audioPulse * 0.22), 0.08);
+    float innerSphere = length(q) - (0.50 + audioPulse * 0.28) + (0.04 + u_audio * 0.035) * sin(8.0 * q.x + u_time * 2.0) * sin(8.0 * q.y);
     float framePreset = opSmoothUnion(boxFrame, innerSphere, 0.24);
 
-    float dFluid = length(q) - 0.66;
+    float dFluid = length(q) - (0.66 + audioPulse * 0.3);
     for (int i = 0; i < 4; i++) {
       float fi = float(i);
       float ang = u_time * (0.62 + fi * 0.14) + fi * 1.57079;
-      vec3 orbOffset = vec3(cos(ang) * 0.76, sin(ang * 1.3) * 0.60, sin(ang) * 0.76);
-      float droplet = length(q - orbOffset) - 0.29;
+      float orbitR = 0.76 + audioPulse * 0.65;
+      vec3 orbOffset = vec3(cos(ang) * orbitR, sin(ang * 1.3) * 0.60, sin(ang) * orbitR);
+      float droplet = length(q - orbOffset) - (0.29 + audioPulse * 0.16);
       dFluid = opSmoothUnion(dFluid, droplet, 0.38);
     }
 
@@ -104,7 +109,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     baseShape = mix(baseShape, dFluid, w12);
 
     float harmonic = 0.015 * sin(10.0 * q.x + u_time * 2.0) * cos(10.0 * q.y - u_time * 1.6) * sin(10.0 * q.z);
-    baseShape += harmonic * (1.0 + min(abs(u_velocity) * 0.05, 1.0));
+    baseShape += harmonic * (1.0 + min(abs(u_velocity) * 0.05, 1.0) + u_audio * 2.6);
 
     vec3 cursorOrbPos = vec3((u_mouse.x - 0.5) * 2.0, (u_mouse.y - 0.5) * 1.8, 0.45);
     float cursorDroplet = length(p - cursorOrbPos) - 0.23;
@@ -153,14 +158,14 @@ const FRAGMENT_SHADER = /* glsl */ `
     vec3 bg = mix(darkBg, paperBg, u_paper);
 
     float rDist = length(uv);
-    float ring1 = smoothstep(0.005, 0.0, abs(rDist - 0.45));
+    float ring1 = smoothstep(0.005, 0.0, abs(rDist - (0.45 + u_audio * 0.035)));
     vec3 cadCol = mix(vec3(0.16, 0.17, 0.21), vec3(0.80, 0.78, 0.74), u_paper);
-    bg = mix(bg, cadCol, ring1 * 0.28);
+    bg = mix(bg, cadCol, ring1 * (0.28 + u_audio * 0.25));
 
     float centerGlow = exp(-rDist * 2.3);
     bg += mix(
-      vec3(1.0, 0.30, 0.02) * centerGlow * 0.16,
-      vec3(0.85, 0.24, 0.02) * centerGlow * 0.08,
+      vec3(1.0, 0.30, 0.02) * centerGlow * (0.16 + u_audio * 0.24),
+      vec3(0.85, 0.24, 0.02) * centerGlow * (0.08 + u_audio * 0.14),
       u_paper
     );
 
@@ -197,14 +202,14 @@ const FRAGMENT_SHADER = /* glsl */ `
       float underCaustic = max(dot(nor, rimDir), 0.0);
 
       float envBands = 0.5 + 0.5 * sin(refl.y * 5.5 + refl.x * 2.2);
-      vec3 irid = thinFilmPalette(fresnel * 0.85 + pos.y * 0.25 + u_time * 0.06);
+      vec3 irid = thinFilmPalette(fresnel * 0.85 + pos.y * 0.25 + u_time * 0.06 + u_audio * 0.2);
 
       vec3 gunmetal = vec3(0.11, 0.115, 0.13) + diffKey * vec3(0.38, 0.39, 0.42);
       gunmetal += diffFill * vec3(0.14, 0.16, 0.21);
       gunmetal += envBands * vec3(0.16, 0.17, 0.21) * (0.45 + 0.55 * fresnel);
-      gunmetal = mix(gunmetal, irid, fresnel * 0.34);
-      gunmetal += fresnel * vec3(1.0, 0.31, 0.02) * 1.18;
-      gunmetal += underCaustic * vec3(1.0, 0.26, 0.0) * 0.40;
+      gunmetal = mix(gunmetal, irid, fresnel * (0.34 + u_audio * 0.22));
+      gunmetal += fresnel * vec3(1.0, 0.31, 0.02) * (1.18 + u_audio * 0.72);
+      gunmetal += underCaustic * vec3(1.0, 0.26, 0.0) * (0.40 + u_audio * 0.25);
       gunmetal += specBroad * vec3(1.0, 0.52, 0.24) * 0.48;
       gunmetal += specSharp * vec3(1.0, 0.97, 0.93) * 1.2;
       gunmetal *= mix(0.4, 1.0, ao);
@@ -212,7 +217,7 @@ const FRAGMENT_SHADER = /* glsl */ `
       vec3 porcelain = vec3(0.78, 0.76, 0.72) + diffKey * vec3(0.26, 0.25, 0.23);
       porcelain += diffFill * vec3(0.10, 0.10, 0.11);
       porcelain -= (1.0 - ao) * 0.34;
-      porcelain = mix(porcelain, vec3(0.86, 0.23, 0.02), fresnel * 0.65 + underCaustic * 0.24);
+      porcelain = mix(porcelain, vec3(0.86, 0.23, 0.02), fresnel * (0.65 + u_audio * 0.3) + underCaustic * 0.24);
       porcelain += specSharp * vec3(1.0) * 0.85;
 
       col = mix(gunmetal, porcelain, u_paper);
@@ -274,13 +279,22 @@ export function WebGLMonolithCanvas({
         const w = (fallbackCanvas.width = container.clientWidth || 520);
         const h = (fallbackCanvas.height = container.clientHeight || 520);
         const isPaper = targetPaperRef.current > 0.5;
+        const audio = ambientAudio.getBassEnergy();
         ctx.fillStyle = isPaper ? '#F1EFEA' : '#0B0C10';
         ctx.fillRect(0, 0, w, h);
         ctx.strokeStyle = isPaper ? '#D93B00' : '#FF4D00';
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = 1.6 + audio * 1.4;
         for (let i = 0; i < 6; i++) {
           ctx.beginPath();
-          ctx.ellipse(w * 0.5, h * 0.5, 70 + i * 22, 40 + i * 14, t * 0.014 + i * 0.4, 0, Math.PI * 2);
+          ctx.ellipse(
+            w * 0.5,
+            h * 0.5,
+            70 + i * 22 + audio * 18,
+            40 + i * 14 + audio * 10,
+            t * 0.014 + i * 0.4,
+            0,
+            Math.PI * 2
+          );
           ctx.stroke();
         }
         t++;
@@ -315,6 +329,7 @@ export function WebGLMonolithCanvas({
       u_velocity: { value: 0 },
       u_paper: { value: targetPaperRef.current },
       u_morph: { value: 0 },
+      u_audio: { value: 0 },
     };
 
     const material = new THREE.ShaderMaterial({
@@ -361,6 +376,8 @@ export function WebGLMonolithCanvas({
       rafId = requestAnimationFrame(renderLoop);
       if (document.hidden || !renderer) return;
 
+      const audioEnergy = ambientAudio.getBassEnergy();
+
       uniforms.u_time.value = (now - startTime) * 0.001 + 1.4;
       uniforms.u_mouse.value.x += (pointerTarget.x - uniforms.u_mouse.value.x) * 0.08;
       uniforms.u_mouse.value.y += (pointerTarget.y - uniforms.u_mouse.value.y) * 0.08;
@@ -368,6 +385,7 @@ export function WebGLMonolithCanvas({
       uniforms.u_velocity.value += (scrollVelocityRef.current - uniforms.u_velocity.value) * 0.12;
       uniforms.u_paper.value += (targetPaperRef.current - uniforms.u_paper.value) * 0.09;
       uniforms.u_morph.value += (targetMorphRef.current - uniforms.u_morph.value) * 0.075;
+      uniforms.u_audio.value += (audioEnergy - uniforms.u_audio.value) * 0.16;
 
       renderer.render(scene, camera);
 
@@ -397,8 +415,8 @@ export function WebGLMonolithCanvas({
     <div className="relative w-full h-full min-h-[380px] lg:min-h-[500px] rounded-[24px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)] shadow-[var(--card-shadow)]">
       <div ref={stageRef} data-cursor="SDF 3D" className="absolute inset-0 z-0" />
 
-      {/* Minimal Floating Pill Morph Controls */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 p-1 rounded-full bg-[var(--bg-glass)] backdrop-blur-xl border border-[var(--hairline)]">
+      {/* Minimal Floating Liquid Glass Morph Controls */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 p-1 rounded-full liquid-glass">
         {PRESETS.map((preset) => {
           const selected = activePreset === preset.id;
           return (

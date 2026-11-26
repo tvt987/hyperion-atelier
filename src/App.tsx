@@ -5,8 +5,18 @@ import Lenis from 'lenis';
 import { CommandPaletteModal, type CommandItem } from './components/CommandPaletteModal';
 import { DistributedSystemsLab } from './components/DistributedSystemsLab';
 import { FlagshipCard } from './components/FlagshipCard';
+import { FlagshipDock } from './components/FlagshipDock';
+import { FlagshipLightbox } from './components/FlagshipLightbox';
+import { GlyphDecodeText, KineticText } from './components/KineticText';
+import { LiquidGlassFilter } from './components/LiquidGlassFilter';
 import { MagneticCursor } from './components/MagneticCursor';
+import { OdometerMetric } from './components/OdometerMetric';
+import { PlatformInspectorPopover } from './components/PlatformInspectorPopover';
 import { WebGLMonolithCanvas } from './components/WebGLMonolithCanvas';
+import {
+  WebGpuAmbientField,
+  type AmbientFieldTelemetry,
+} from './components/WebGpuAmbientField';
 import {
   CV_DOSSIERS,
   EXPERIENCE_ROWS,
@@ -14,6 +24,7 @@ import {
   SKILL_GROUPS,
   type WorkCategory,
 } from './data/atelierContent';
+import { ambientAudio } from './engines/ambientAudio';
 import { tactileAudio } from './engines/tactileAudio';
 import { applyAtelierThemeWithTransition, type AtelierTheme } from './engines/themeTransition';
 
@@ -41,7 +52,13 @@ export function App() {
   const [category, setCategory] = useState<WorkCategory>('all');
   const [audioOn, setAudioOn] = useState<boolean>(false);
   const [fps, setFps] = useState<number>(60);
+  const [ambientTelemetry, setAmbientTelemetry] = useState<AmbientFieldTelemetry>({
+    backend: 'canvas-fallback',
+    particleCount: 900,
+    label: 'CANVAS FALLBACK · 900',
+  });
   const [cmdOpen, setCmdOpen] = useState<boolean>(false);
+  const [lightboxId, setLightboxId] = useState<string | null>(null);
   const [zaloModalOpen, setZaloModalOpen] = useState<boolean>(false);
   const [copiedEmail, setCopiedEmail] = useState<boolean>(false);
   const [labCmdSeq, setLabCmdSeq] = useState<number>(0);
@@ -58,6 +75,10 @@ export function App() {
   useEffect(() => {
     document.documentElement.setAttribute('lang', lang);
   }, [lang]);
+
+  useEffect(() => {
+    return ambientAudio.subscribe((active) => setAudioOn(active));
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
@@ -117,6 +138,13 @@ export function App() {
     }
   }, []);
 
+  const handleToggleAudio = useCallback(() => {
+    const next = ambientAudio.toggle();
+    tactileAudio.setEnabled(next);
+    if (next) tactileAudio.playLatch();
+    setAudioOn(next);
+  }, []);
+
   const handleThemeSwitch = useCallback(
     (ev?: React.MouseEvent<HTMLButtonElement>) => {
       const next: AtelierTheme = theme === 'obsidian' ? 'paper' : 'obsidian';
@@ -161,14 +189,27 @@ export function App() {
       {
         id: 'act-audio',
         code: '08',
-        group: 'INTERFACE',
-        label: audioOn ? 'Mute Web Audio Detents' : 'Enable Web Audio Detents',
+        group: 'AUDIO DSP',
+        label: audioOn ? 'Mute Ambient Synth & FFT' : 'Engage Ambient Harmonic Synth & FFT',
         hint: 'WEB AUDIO',
-        onSelect: () => setAudioOn(tactileAudio.toggle()),
+        onSelect: () => handleToggleAudio(),
+      },
+      {
+        id: 'act-inspector',
+        code: '09',
+        group: '2026 APIS',
+        label: 'Inspect WebGPU / 2026 Hardware Telemetry',
+        hint: 'POPOVER API',
+        onSelect: () => {
+          const el = document.getElementById('platform-inspector') as
+            | (HTMLElement & { togglePopover?: () => void })
+            | null;
+          el?.togglePopover?.();
+        },
       },
       {
         id: 'act-raft',
-        code: '09',
+        code: '10',
         group: 'SYSTEMS LAB',
         label: 'Trigger Raft Leader Failover (Web Worker)',
         hint: 'LIVE CHAOS',
@@ -180,7 +221,7 @@ export function App() {
       },
       ...CV_DOSSIERS.map((cv, idx) => ({
         id: `cv-${cv.id}`,
-        code: `${10 + idx}`,
+        code: `${11 + idx}`,
         group: 'CV PDF',
         label: `${cv.titleEn} (${cv.keywords})`,
         hint: 'PDF',
@@ -188,18 +229,24 @@ export function App() {
       })),
       {
         id: 'contact-zalo',
-        code: '13',
+        code: '14',
         group: 'CONTACT',
         label: 'Zalo QR — (+84) 0931 467 024',
         hint: 'QR',
         onSelect: () => setZaloModalOpen(true),
       },
     ],
-    [audioOn, handleThemeSwitch, scrollToSection, theme]
+    [audioOn, handleThemeSwitch, handleToggleAudio, scrollToSection, theme]
   );
 
   return (
     <div className="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
+      <LiquidGlassFilter />
+      <WebGpuAmbientField
+        theme={theme}
+        scrollVelocityRef={scrollVelocityRef}
+        onTelemetryChange={setAmbientTelemetry}
+      />
       <div className="grain-overlay" />
       <MagneticCursor />
 
@@ -209,36 +256,98 @@ export function App() {
       </div>
 
       {/* ===================================================================== */}
-      {/* FLOATING MINIMALIST GLASS NAVIGATION DOCK                             */}
+      {/* FLOATING APPLE 2026 LIQUID GLASS NAVIGATION DOCK                      */}
       {/* ===================================================================== */}
-      <header className="fixed top-4 left-0 right-0 z-50 px-4 pointer-events-none">
-        <div className="max-w-[1160px] mx-auto flex items-center justify-between px-4 sm:px-5 h-12 rounded-full bg-[var(--bg-glass)] backdrop-blur-2xl border border-[var(--hairline)] shadow-lg pointer-events-auto">
-          <a href="#top" className="flex items-center gap-2.5 shrink-0">
-            <span style={{ backgroundColor: 'var(--accent)' }} className="w-2 h-2 rounded-full" />
+      <header className="fixed top-4 left-0 right-0 z-50 px-3 sm:px-4 pointer-events-none">
+        <div className="max-w-[1160px] mx-auto flex items-center justify-between px-3.5 sm:px-5 h-12 rounded-full liquid-glass pointer-events-auto">
+          <a href="#top" className="flex items-center gap-2 shrink-0">
+            <span
+              style={{
+                backgroundColor:
+                  ambientTelemetry.backend === 'webgpu' ? 'var(--signal-ok)' : 'var(--accent)',
+              }}
+              className="w-2 h-2 rounded-full"
+            />
             <span className="font-mono-tech text-xs font-bold tracking-wider uppercase text-[var(--fg-primary)]">
               TVT
-            </span>
-            <span className="hidden md:inline font-mono-tech text-[11px] text-[var(--fg-muted)]">
-              · {fps} FPS
             </span>
           </a>
 
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-[var(--fg-secondary)]">
-            <button type="button" onClick={() => scrollToSection('sec-works')} className="hover:text-[var(--fg-primary)] transition cursor-pointer">
-              {lang === 'vi' ? 'Dự Án' : 'Works'}
+            <button
+              type="button"
+              onClick={() => scrollToSection('sec-works')}
+              className="hover:text-[var(--fg-primary)] transition cursor-pointer"
+            >
+              <GlyphDecodeText text={lang === 'vi' ? 'Dự Án' : 'Works'} />
             </button>
-            <button type="button" onClick={() => scrollToSection('sec-lab')} className="hover:text-[var(--fg-primary)] transition cursor-pointer">
-              Lab
+            <button
+              type="button"
+              onClick={() => scrollToSection('sec-lab')}
+              className="hover:text-[var(--fg-primary)] transition cursor-pointer"
+            >
+              <GlyphDecodeText text="Lab" />
             </button>
-            <button type="button" onClick={() => scrollToSection('sec-stack')} className="hover:text-[var(--fg-primary)] transition cursor-pointer">
-              Stack
+            <button
+              type="button"
+              onClick={() => scrollToSection('sec-stack')}
+              className="hover:text-[var(--fg-primary)] transition cursor-pointer"
+            >
+              <GlyphDecodeText text="Stack" />
             </button>
-            <button type="button" onClick={() => scrollToSection('sec-dossier')} className="hover:text-[var(--fg-primary)] transition cursor-pointer">
-              CV &amp; Contact
+            <button
+              type="button"
+              onClick={() => scrollToSection('sec-dossier')}
+              className="hover:text-[var(--fg-primary)] transition cursor-pointer"
+            >
+              <GlyphDecodeText text="CV & Contact" />
             </button>
           </nav>
 
           <div className="flex items-center gap-1.5 font-mono-tech text-[11px]">
+            {/* Minimalist Animated Sound Wave Toggle */}
+            <button
+              type="button"
+              data-testid="btn-audio-toggle"
+              onClick={handleToggleAudio}
+              aria-label={audioOn ? 'Mute ambient synth' : 'Enable ambient synth'}
+              title={audioOn ? 'Audio FFT: Live' : 'Audio FFT: Off'}
+              className="w-7 h-7 rounded-full border border-[var(--hairline)] hover:border-[var(--hairline-strong)] flex items-center justify-center gap-[2px] transition cursor-pointer"
+            >
+              {[0.42, 0.88, 0.58, 1.0, 0.48].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    height: `${Math.round(h * 11)}px`,
+                    backgroundColor: audioOn ? 'var(--accent)' : 'var(--fg-muted)',
+                    animationDelay: `${i * 120}ms`,
+                  }}
+                  className={`w-[1.5px] rounded-full ${audioOn ? 'sound-bar-live' : ''}`}
+                />
+              ))}
+            </button>
+
+            {/* Native HTML Popover + CSS Anchor Positioning Hardware Pill */}
+            <button
+              type="button"
+              data-testid="btn-gpu-inspector"
+              popoverTarget="platform-inspector"
+              onClick={() => tactileAudio.playTick(1520)}
+              className="gpu-anchor-btn px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <span
+                style={{
+                  backgroundColor:
+                    ambientTelemetry.backend === 'webgpu'
+                      ? 'var(--signal-ok)'
+                      : 'var(--signal-warn)',
+                }}
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+              />
+              <span className="hidden sm:inline">GPU / 2026 APIs</span>
+              <span className="sm:hidden">GPU</span>
+            </button>
+
             <button
               type="button"
               data-testid="btn-lang-toggle"
@@ -246,7 +355,7 @@ export function App() {
                 tactileAudio.playTick();
                 setLang((l) => (l === 'en' ? 'vi' : 'en'));
               }}
-              className="px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition cursor-pointer"
+              className="px-2 sm:px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition cursor-pointer"
             >
               {lang.toUpperCase()}
             </button>
@@ -256,7 +365,7 @@ export function App() {
               data-testid="btn-theme-morph"
               onClick={handleThemeSwitch}
               aria-label="Toggle theme"
-              className="px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition cursor-pointer"
+              className="px-2 sm:px-2.5 py-1 rounded-full border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition cursor-pointer"
             >
               {theme === 'obsidian' ? 'Light' : 'Dark'}
             </button>
@@ -269,7 +378,7 @@ export function App() {
                 setCmdOpen(true);
               }}
               style={{ backgroundColor: 'var(--fg-primary)', color: 'var(--bg-primary)' }}
-              className="px-3 py-1 rounded-full font-bold cursor-pointer"
+              className="px-2.5 sm:px-3 py-1 rounded-full font-bold cursor-pointer"
             >
               ⌘K
             </button>
@@ -277,19 +386,25 @@ export function App() {
         </div>
       </header>
 
-      <main id="top" className="relative">
+      {/* Native Top-Layer Hardware Inspector Popover */}
+      <PlatformInspectorPopover
+        fps={fps}
+        ambientTelemetry={ambientTelemetry}
+        audioOn={audioOn}
+        onToggleAudio={handleToggleAudio}
+      />
+
+      <main id="top" className="relative z-10">
         {/* =================================================================== */}
         {/* 01 // ULTRA-CLEAN VISUAL HERO (ZERO PROSE PARAGRAPHS)               */}
         {/* =================================================================== */}
         <section className="hero-ambient pt-24 pb-16 sm:pt-32 sm:pb-20 px-5 sm:px-8">
           <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Left 7 Cols: Pure Signal Typography & Keywords */}
+            {/* Left 7 Cols: Pure Signal Kinetic Typography & Keywords */}
             <div className="lg:col-span-7 space-y-7">
               <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-elevated)] border border-[var(--hairline)] font-mono-tech text-[11px] text-[var(--fg-secondary)]">
                 <span style={{ backgroundColor: 'var(--signal-ok)' }} className="w-2 h-2 rounded-full animate-pulse" />
-                <span>
-                  {lang === 'vi' ? 'Remote B2B · $25–$45/hr · UTC+7' : 'Remote B2B · $25–$45/hr · UTC+7'}
-                </span>
+                <span>Remote B2B · $25–$45/hr · UTC+7</span>
               </div>
 
               <div className="space-y-2">
@@ -299,19 +414,25 @@ export function App() {
                 <h1 className="font-display hero-headline font-extrabold text-[var(--fg-primary)]">
                   {lang === 'vi' ? (
                     <>
-                      Kiến Trúc
+                      <KineticText text="Kiến Trúc" scrollVelocityRef={scrollVelocityRef} />
                       <br />
-                      <span className="font-serif-editorial italic font-normal text-[var(--accent)]">
-                        &amp; Sản Phẩm.
-                      </span>
+                      <KineticText
+                        text="& Sản Phẩm."
+                        accent
+                        scrollVelocityRef={scrollVelocityRef}
+                        className="font-serif-editorial italic font-normal text-[var(--accent)]"
+                      />
                     </>
                   ) : (
                     <>
-                      Systems
+                      <KineticText text="Systems" scrollVelocityRef={scrollVelocityRef} />
                       <br />
-                      <span className="font-serif-editorial italic font-normal text-[var(--accent)]">
-                        &amp; Craft.
-                      </span>
+                      <KineticText
+                        text="& Craft."
+                        accent
+                        scrollVelocityRef={scrollVelocityRef}
+                        className="font-serif-editorial italic font-normal text-[var(--accent)]"
+                      />
                     </>
                   )}
                 </h1>
@@ -329,7 +450,7 @@ export function App() {
                 ))}
               </div>
 
-              {/* Clean CTA Trio */}
+              {/* Clean CTA Trio with Subtle Glyph Decode */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <button
                   type="button"
@@ -337,14 +458,14 @@ export function App() {
                   style={{ backgroundColor: 'var(--fg-primary)', color: 'var(--bg-primary)' }}
                   className="px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide hover:opacity-90 transition cursor-pointer"
                 >
-                  {lang === 'vi' ? 'Xem 6 Dự Án Live ↓' : 'Selected Works ↓'}
+                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 6 Dự Án Live ↓' : 'Selected Works ↓'} />
                 </button>
                 <button
                   type="button"
                   onClick={() => scrollToSection('sec-dossier')}
                   className="px-5 py-3 rounded-full border border-[var(--hairline-strong)] bg-[var(--bg-elevated)] text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:border-[var(--accent)] transition cursor-pointer"
                 >
-                  {lang === 'vi' ? 'Tải CV PDF' : 'CV Dossier'}
+                  <GlyphDecodeText text={lang === 'vi' ? 'Tải CV PDF' : 'CV Dossier'} />
                 </button>
                 <a
                   href="https://github.com/tvt987"
@@ -352,12 +473,12 @@ export function App() {
                   rel="noreferrer"
                   className="px-5 py-3 rounded-full border border-[var(--hairline)] text-xs sm:text-sm font-medium text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] hover:border-[var(--hairline-strong)] transition"
                 >
-                  GitHub ↗
+                  <GlyphDecodeText text="GitHub ↗" />
                 </a>
               </div>
             </div>
 
-            {/* Right 5 Cols: Floating Frameless WebGL2 3D Ferrofluid Sculpture */}
+            {/* Right 5 Cols: Floating Frameless Audio-Reactive WebGL2 3D Ferrofluid Sculpture */}
             <div className="lg:col-span-5 h-[390px] sm:h-[460px] lg:h-[510px]">
               <WebGLMonolithCanvas
                 theme={theme}
@@ -368,7 +489,7 @@ export function App() {
             </div>
           </div>
 
-          {/* Floating 4-Metric Signal Ribbon */}
+          {/* Floating 4-Metric Odometer Signal Ribbon */}
           <div className="max-w-[1200px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
@@ -380,9 +501,10 @@ export function App() {
                 key={m.value}
                 className="px-5 py-4 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] flex items-baseline justify-between gap-2"
               >
-                <strong className="font-display text-2xl sm:text-3xl font-extrabold text-[var(--fg-primary)]">
-                  {m.value}
-                </strong>
+                <OdometerMetric
+                  value={m.value}
+                  className="font-display text-2xl sm:text-3xl font-extrabold text-[var(--fg-primary)]"
+                />
                 <span className="font-mono-tech text-[10.5px] text-[var(--fg-muted)] uppercase text-right">
                   {lang === 'vi' ? m.labelVi : m.labelEn}
                 </span>
@@ -392,7 +514,7 @@ export function App() {
         </section>
 
         {/* =================================================================== */}
-        {/* 02 // VISUAL FLAGSHIP GALLERY (6 LIVE APPS WITH REAL PREVIEWS)      */}
+        {/* 02 // VISUAL FLAGSHIP GALLERY (6 LIVE APPS WITH 3D TILT + LIGHTBOX) */}
         {/* =================================================================== */}
         <section id="sec-works" className="py-16 sm:py-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
           <div className="max-w-[1200px] mx-auto">
@@ -433,7 +555,12 @@ export function App() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7">
               {filteredWorks.map((item) => (
-                <FlagshipCard key={item.id} item={item} lang={lang} />
+                <FlagshipCard
+                  key={item.id}
+                  item={item}
+                  lang={lang}
+                  onInspect={(work) => setLightboxId(work.id)}
+                />
               ))}
             </div>
           </div>
@@ -466,7 +593,7 @@ export function App() {
               </div>
             </div>
 
-            <div className="rounded-[20px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)]">
+            <div className="scroll-view-reveal rounded-[20px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)]">
               <DistributedSystemsLab
                 theme={theme}
                 lang={lang}
@@ -528,7 +655,7 @@ export function App() {
               {SKILL_GROUPS.map((group) => (
                 <div
                   key={group.labelEn}
-                  className="p-6 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] space-y-4"
+                  className="scroll-view-reveal p-6 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] space-y-4"
                 >
                   <div className="font-mono-tech text-[11px] uppercase tracking-wider text-[var(--fg-muted)]">
                     {lang === 'vi' ? group.labelVi : group.labelEn}
@@ -577,7 +704,7 @@ export function App() {
                   target="_blank"
                   rel="noreferrer"
                   data-cursor="OPEN PDF ↗"
-                  className="group p-5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] hover:border-[var(--hairline-strong)] transition flex items-center justify-between gap-4"
+                  className="scroll-view-reveal group p-5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] hover:border-[var(--hairline-strong)] transition flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -644,13 +771,29 @@ export function App() {
         </section>
       </main>
 
-      {/* Minimal 1-Line Footer */}
-      <footer className="py-8 px-5 sm:px-8 border-t border-[var(--hairline)]">
+      {/* Minimal 1-Line Footer (extra bottom clearance for floating dock on desktop) */}
+      <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>WebGL2 SDF · Web Workers · View Transitions</span>
+          <span>WebGPU WGSL · WebGL2 SDF · Liquid Glass · View Transitions</span>
         </div>
       </footer>
+
+      {/* Bottom Floating Apple-Style Liquid Glass Spring-Magnification Dock */}
+      <FlagshipDock
+        works={FLAGSHIP_WORKS}
+        onScrollToSection={scrollToSection}
+        onOpenCommandPalette={() => setCmdOpen(true)}
+      />
+
+      {/* Instant Liquid Glass Flagship Lightbox */}
+      <FlagshipLightbox
+        items={FLAGSHIP_WORKS}
+        activeId={lightboxId}
+        lang={lang}
+        onClose={() => setLightboxId(null)}
+        onSelectId={setLightboxId}
+      />
 
       {/* Command Palette (CMD+K) */}
       <CommandPaletteModal open={cmdOpen} onClose={() => setCmdOpen(false)} items={commandItems} lang={lang} />
@@ -665,7 +808,7 @@ export function App() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xs p-6 rounded-3xl bg-[var(--bg-elevated)] border border-[var(--hairline-strong)] space-y-4 text-center"
+            className="liquid-glass w-full max-w-xs p-6 rounded-3xl space-y-4 text-center"
           >
             <div className="flex items-center justify-between font-mono-tech text-xs">
               <span className="text-[var(--fg-primary)] font-bold">ZALO · +84 931 467 024</span>

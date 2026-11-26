@@ -1,7 +1,7 @@
 {
   "name": "hyperion-atelier",
   "private": true,
-  "version": "2.0.0",
+  "version": "4.0.0",
   "description": "Swiss-Industrial Creative Engineering Atelier & Interactive Distributed/AI Systems Lab — Truong Van Tinh",
   "type": "module",
   "scripts": {

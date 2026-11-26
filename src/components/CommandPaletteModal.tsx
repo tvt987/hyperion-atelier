@@ -89,7 +89,7 @@ export function CommandPaletteModal({
       <div
         data-testid="command-palette-dialog"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-[var(--bg-panel)] hairline-box shadow-2xl overflow-hidden"
+        className="liquid-glass w-full max-w-2xl rounded-2xl overflow-hidden"
       >
         {/* Search Input Header */}
         <div className="flex items-center px-4 py-3.5 hairline-b gap-3">
@@ -173,7 +173,7 @@ export function CommandPaletteModal({
         {/* Footer Keyboard Legend */}
         <div className="px-4 py-2.5 hairline-t bg-[var(--bg-elevated)] flex items-center justify-between font-mono-tech text-[10px] text-[var(--fg-muted)]">
           <span>UP / DOWN TO NAVIGATE · ENTER TO EXECUTE</span>
-          <span>TRUONG VAN TINH // ATELIER OS v2.6</span>
+          <span>TRUONG VAN TINH // ATELIER OS v4.0</span>
         </div>
       </div>
     </div>
