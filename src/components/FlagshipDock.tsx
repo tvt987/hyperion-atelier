@@ -12,8 +12,10 @@ interface FlagshipDockProps {
 
 const MONOGRAMS: Record<string, string> = {
   'tvt-studio': 'TVT',
+  'tvt-tools': '10T',
   'maison-vera': 'MV',
   'atelier-canvas': 'AC',
+  'velox-ev-motors': 'EV',
   'lumina-medspa': 'LM',
   'kinetix-proptech': 'KX',
   'pulse-pos-fnb': 'POS',
@@ -42,7 +44,7 @@ export function FlagshipDock({
   const [mouseX, setMouseX] = useState<number | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const flagshipEntries: DockEntry[] = works.map((w) => ({
+  const flagshipEntries: DockEntry[] = works.slice(0, 10).map((w) => ({
     id: w.id,
     monogram: MONOGRAMS[w.id] ?? w.index,
     tooltip: `${w.title} ${w.version} ↗`,

@@ -9,13 +9,13 @@ interface GitHubPulseData {
   liveFetched: boolean;
 }
 
-const CACHE_KEY = 'tvt_gh_pulse_v5';
+const CACHE_KEY = 'tvt_gh_pulse_v6';
 
 const DEFAULT_PULSE: GitHubPulseData = {
-  publicRepos: 12,
-  livePages: 7,
-  latestRepo: 'hyperion-atelier',
-  latestDate: '2026',
+  publicRepos: 33,
+  livePages: 22,
+  latestRepo: 'tvt-studio',
+  latestDate: '2026-11-27',
   bars: [
     0.32, 0.55, 0.42, 0.78, 0.92, 0.64, 0.48,
     0.85, 0.96, 0.72, 0.58, 0.44, 0.88, 1.0,
@@ -64,7 +64,7 @@ export function GitHubPulseBar() {
             signal: controller.signal,
             headers: { Accept: 'application/vnd.github+json' },
           }),
-          fetch('https://api.github.com/users/tvt987/repos?sort=pushed&per_page=10', {
+          fetch('https://api.github.com/users/tvt987/repos?sort=pushed&per_page=100', {
             signal: controller.signal,
             headers: { Accept: 'application/vnd.github+json' },
           }),
@@ -81,7 +81,7 @@ export function GitHubPulseBar() {
 
         const latest = reposJson[0];
         const pagesCount = Math.max(
-          7,
+          22,
           reposJson.filter((r) => r.has_pages).length
         );
 

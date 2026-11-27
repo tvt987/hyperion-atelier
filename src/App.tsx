@@ -51,11 +51,12 @@ gsap.registerPlugin(ScrollTrigger);
 const HERO_KEYWORDS = ['.NET 10', 'Python', 'React 19', 'MCP / A2A', 'DuckDB-WASM', 'Three.js', 'WebGPU'];
 
 const CATEGORIES: Array<{ id: WorkCategory; labelEn: string; labelVi: string }> = [
-  { id: 'all', labelEn: 'All', labelVi: 'Tất Cả' },
-  { id: 'commerce', labelEn: 'E-Commerce', labelVi: 'Bán Hàng' },
-  { id: 'design', labelEn: 'Design Tool', labelVi: 'Thiết Kế' },
+  { id: 'all', labelEn: 'All (21)', labelVi: 'Tất Cả (21)' },
+  { id: 'commerce', labelEn: 'Commerce & 3D', labelVi: 'Bán Hàng & 3D' },
+  { id: 'enterprise', labelEn: 'Enterprise B2B', labelVi: 'Doanh Nghiệp B2B' },
+  { id: 'systems', labelEn: 'Tools & Core', labelVi: 'Công Cụ & Hệ Thống' },
+  { id: 'design', labelEn: 'CAD & Design', labelVi: 'Thiết Kế & CAD' },
   { id: 'ai', labelEn: 'AI & Agents', labelVi: 'AI & Agent' },
-  { id: 'systems', labelEn: 'Data & Core', labelVi: 'Hệ Thống' },
 ];
 
 type DocWithViewTransition = Document & {
@@ -354,7 +355,7 @@ export function App() {
       },
       ...FLAGSHIP_WORKS.map((w, idx) => ({
         id: `work-${w.id}`,
-        code: `0${idx + 1}`,
+        code: String(idx + 1).padStart(2, '0'),
         group: 'LIVE APPS',
         label: `${w.title} ${w.version} — ${w.highlightMetric} ↗`,
         hint: w.ciBadge,
@@ -755,7 +756,7 @@ export function App() {
                   style={{ backgroundColor: 'var(--fg-primary)', color: 'var(--bg-primary)' }}
                   className="px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide hover:opacity-90 transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 10 Dự Án Live ↓' : 'Selected Works ↓'} />
+                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 21 Dự Án Live ↓' : '21 Live Works ↓'} />
                 </button>
                 <a
                   href="https://tvt987.github.io/tvt-studio/"
@@ -764,7 +765,15 @@ export function App() {
                   style={{ borderColor: 'var(--accent)', backgroundColor: 'var(--accent-soft)' }}
                   className="px-5 py-3 rounded-full border text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:opacity-90 transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? 'Đặt Làm Web / Kho Mẫu ↗' : 'Order Web / Store ↗'} />
+                  <GlyphDecodeText text={lang === 'vi' ? 'Đặt Làm Web / 19 Mẫu ↗' : 'Order Web / 19 Store ↗'} />
+                </a>
+                <a
+                  href="https://tvt987.github.io/tvt-tools/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-5 py-3 rounded-full border border-[var(--hairline-strong)] bg-[var(--bg-elevated)] text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:border-[var(--accent)] transition cursor-pointer"
+                >
+                  <GlyphDecodeText text={lang === 'vi' ? '10 Pro Tools Miễn Phí ↗' : '10 Free Pro Tools ↗'} />
                 </a>
                 <button
                   type="button"
@@ -804,8 +813,8 @@ export function App() {
             {[
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
               { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
-              { value: '0.00%', labelEn: 'Double-Spend Leaks', labelVi: 'Lỗi Âm Kho' },
-              { value: '304+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
+              { value: '22+', labelEn: 'Live Apps & 10 Tools', labelVi: 'Web App & 10 Pro Tools' },
+              { value: '660+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
             ].map((m) => (
               <div
                 key={m.value}
@@ -837,7 +846,7 @@ export function App() {
                   01 · {lang === 'vi' ? 'Sản Phẩm Live' : 'Selected Works'}
                 </span>
                 <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[var(--fg-primary)] mt-1">
-                  {lang === 'vi' ? '6 Hệ Thống Đang Chạy' : 'Six Live Flagships'}
+                  {lang === 'vi' ? '21 Hệ Thống & 10 Pro Tools' : '21 Live Production Apps'}
                 </h2>
               </div>
 
@@ -1089,7 +1098,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>Navier-Stokes FBO · WebGPU WGSL · Gemini Nano · Liquid Glass · v5.0</span>
+          <span>22 Live Apps · 10 Pro Tools · 660+ CI · WebGPU WGSL · Liquid Glass · v6.0</span>
         </div>
       </footer>
 

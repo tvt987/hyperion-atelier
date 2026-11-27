@@ -13,6 +13,7 @@ import {
   SAMPLE_SENIOR_JD,
 } from '../aiTwinEngine';
 import { parseVoiceCommand } from '../voicePilot';
+import { FLAGSHIP_WORKS } from '../../data/atelierContent';
 
 describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine & Voice Pilot', () => {
   it('retrieves grounded metrics and Generative UI actions for Digital Twin queries', () => {
@@ -88,5 +89,16 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(parseVoiceCommand('show lab')).toEqual({ type: 'SCROLL', sectionId: 'sec-lab' });
     expect(parseVoiceCommand('download cv')).toEqual({ type: 'SCROLL', sectionId: 'sec-dossier' });
     expect(parseVoiceCommand('unrecognized silence')).toBeNull();
+  });
+
+  it('registers all 21 live flagship production apps with unique IDs and valid live URLs', () => {
+    expect(FLAGSHIP_WORKS.length).toBe(21);
+    const ids = new Set(FLAGSHIP_WORKS.map((w) => w.id));
+    expect(ids.size).toBe(21);
+    for (const work of FLAGSHIP_WORKS) {
+      expect(work.liveUrl).toMatch(/^https:\/\/tvt987\.github\.io\//);
+      expect(work.previewImage).toMatch(/^previews\/[a-z0-9-]+\.webp$/);
+      expect(work.ciBadge).toContain('CI');
+    }
   });
 });
