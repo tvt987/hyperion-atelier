@@ -51,7 +51,7 @@ gsap.registerPlugin(ScrollTrigger);
 const HERO_KEYWORDS = ['.NET 10', 'Python', 'React 19', 'MCP / A2A', 'DuckDB-WASM', 'Three.js', 'WebGPU'];
 
 const CATEGORIES: Array<{ id: WorkCategory; labelEn: string; labelVi: string }> = [
-  { id: 'all', labelEn: 'All (21)', labelVi: 'Tất Cả (21)' },
+  { id: 'all', labelEn: 'All (24)', labelVi: 'Tất Cả (24)' },
   { id: 'commerce', labelEn: 'Commerce & 3D', labelVi: 'Bán Hàng & 3D' },
   { id: 'enterprise', labelEn: 'Enterprise B2B', labelVi: 'Doanh Nghiệp B2B' },
   { id: 'systems', labelEn: 'Tools & Core', labelVi: 'Công Cụ & Hệ Thống' },
@@ -756,7 +756,7 @@ export function App() {
                   style={{ backgroundColor: 'var(--fg-primary)', color: 'var(--bg-primary)' }}
                   className="px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide hover:opacity-90 transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 21 Dự Án Live ↓' : '21 Live Works ↓'} />
+                  <GlyphDecodeText text={lang === 'vi' ? 'Xem 24 Dự Án Live ↓' : '24 Live Works ↓'} />
                 </button>
                 <a
                   href="https://tvt987.github.io/tvt-studio/"
@@ -765,7 +765,7 @@ export function App() {
                   style={{ borderColor: 'var(--accent)', backgroundColor: 'var(--accent-soft)' }}
                   className="px-5 py-3 rounded-full border text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:opacity-90 transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? 'Đặt Làm Web / 19 Mẫu ↗' : 'Order Web / 19 Store ↗'} />
+                  <GlyphDecodeText text={lang === 'vi' ? 'Đặt Làm Web / 22 Mẫu ↗' : 'Order Web / 22 Store ↗'} />
                 </a>
                 <a
                   href="https://tvt987.github.io/tvt-tools/"
@@ -813,8 +813,8 @@ export function App() {
             {[
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
               { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
-              { value: '22+', labelEn: 'Live Apps & 10 Tools', labelVi: 'Web App & 10 Pro Tools' },
-              { value: '1003', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
+              { value: '25', labelEn: 'Live Apps & 10 Tools', labelVi: 'Web App & 10 Pro Tools' },
+              { value: '1271', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
             ].map((m) => (
               <div
                 key={m.value}
@@ -846,7 +846,7 @@ export function App() {
                   01 · {lang === 'vi' ? 'Sản Phẩm Live' : 'Selected Works'}
                 </span>
                 <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[var(--fg-primary)] mt-1">
-                  {lang === 'vi' ? '21 Hệ Thống & 10 Pro Tools' : '21 Live Production Apps'}
+                  {lang === 'vi' ? '24 Hệ Thống & 10 Pro Tools' : '24 Live Production Apps'}
                 </h2>
               </div>
 
@@ -1098,7 +1098,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>22 Live Apps · 10 Pro Tools · 1,003 CI · WebGPU WGSL · Liquid Glass · v7.0</span>
+          <span>25 Live Apps · 10 Pro Tools · 1,271 CI · WebGPU WGSL · Liquid Glass · v7.5</span>
         </div>
       </footer>
 
