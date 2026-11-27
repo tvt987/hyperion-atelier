@@ -91,14 +91,76 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(parseVoiceCommand('unrecognized silence')).toBeNull();
   });
 
-  it('registers all 28 live flagship production apps with unique IDs and valid live URLs', () => {
+  it('registers all 28 live flagship production apps with unique IDs, sequential 01..28 indices, and valid URLs', () => {
     expect(FLAGSHIP_WORKS.length).toBe(28);
     const ids = new Set(FLAGSHIP_WORKS.map((w) => w.id));
     expect(ids.size).toBe(28);
+
+    const expectedIndices = Array.from({ length: 28 }, (_, i) => String(i + 1).padStart(2, '0'));
+    expect(FLAGSHIP_WORKS.map((w) => w.index)).toEqual(expectedIndices);
+
     for (const work of FLAGSHIP_WORKS) {
       expect(work.liveUrl).toMatch(/^https:\/\/tvt987\.github\.io\//);
+      expect(work.repoUrl).toMatch(/^https:\/\/github\.com\/tvt987\//);
       expect(work.previewImage).toMatch(/^previews\/[a-z0-9-]+\.webp$/);
-      expect(work.ciBadge).toContain('CI');
+      expect(work.ciBadge).toMatch(/^\d+\/\d+ CI$/);
+    }
+  });
+
+  it('verifies all 26 full-stack monorepos cite .NET 10 or FastAPI plus TVT Studio v8.0 & TVT Tools v2.0 (2,850+ showcase CI)', () => {
+    const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
+    const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
+    expect(studio?.version).toBe('v8.0 · Supabase RLS');
+    expect(studio?.ciBadge).toBe('49/49 CI');
+    expect(tools?.version).toBe('v2.0 · 12 Engines');
+    expect(tools?.ciBadge).toBe('73/73 CI');
+
+    const monorepos = FLAGSHIP_WORKS.filter((w) => w.id !== 'tvt-studio' && w.id !== 'tvt-tools');
+    expect(monorepos).toHaveLength(26);
+
+    const dotnetRepos = monorepos.filter((w) => w.version.includes('.NET 10'));
+    const fastapiRepos = monorepos.filter((w) => w.version.includes('FastAPI'));
+    expect(dotnetRepos).toHaveLength(18);
+    expect(fastapiRepos).toHaveLength(8);
+    expect(dotnetRepos.length + fastapiRepos.length).toBe(26);
+
+    const totalShowcaseTests = FLAGSHIP_WORKS.reduce((sum, w) => {
+      const m = w.ciBadge.match(/^(\d+)\/(\d+) CI$/);
+      expect(m).not.toBeNull();
+      expect(m?.[1]).toBe(m?.[2]);
+      return sum + Number(m?.[1] ?? 0);
+    }, 0);
+    expect(totalShowcaseTests).toBe(2853);
+  });
+
+  it('surfaces v11.0 portfolio facts (29 live apps, 26/26 monorepos, 12 pro tools, 2,870+ live CI) in AI Twin & JD Fit', () => {
+    const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
+    expect(portfolioAns.id).toBe('live-flagships');
+    expect(portfolioAns.title).toContain('29 Live Production Web Apps');
+    expect(portfolioAns.title).toContain('26/26 Monorepos');
+    expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('2,870+ Live CI Tests'))).toBe(true);
+
+    const report = analyzeJdFit(SAMPLE_SENIOR_JD);
+    expect(report.tailoredPitch).toContain('29 live web apps');
+    expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
+    expect(report.tailoredPitch).toContain('12 Free Pro Tools');
+    expect(report.tailoredPitch).toContain('2,870+ live CI tests');
+  });
+
+  it('enforces zero UI emojis across all 28 flagship showcase entries', () => {
+    const emojiRe = /\p{Emoji_Presentation}/u;
+    for (const work of FLAGSHIP_WORKS) {
+      const combined = [
+        work.title,
+        work.version,
+        work.taglineEn,
+        work.taglineVi,
+        work.highlightMetric,
+        work.ciBadge,
+        ...work.keywords,
+      ].join(' ');
+      expect(emojiRe.test(combined)).toBe(false);
     }
   });
 });

@@ -1,26 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { AskTinhModal } from './components/AskTinhModal';
-import { CommandPaletteModal, type CommandItem } from './components/CommandPaletteModal';
-import { DistributedSystemsLab } from './components/DistributedSystemsLab';
+import type { CommandItem } from './components/CommandPaletteModal';
 import { FlagshipCard } from './components/FlagshipCard';
 import { FlagshipDock } from './components/FlagshipDock';
-import { FlagshipLightbox } from './components/FlagshipLightbox';
 import { HeroFlagshipShowcase } from './components/HeroFlagshipShowcase';
 import { GlyphDecodeText, KineticText } from './components/KineticText';
 import { LiquidGlassFilter } from './components/LiquidGlassFilter';
-import {
-  NavierStokesFluidCanvas,
-  type FluidTelemetry,
-} from './components/NavierStokesFluidCanvas';
-import { PlatformInspectorPopover } from './components/PlatformInspectorPopover';
-import {
-  WebGpuAmbientField,
-  type AmbientFieldTelemetry,
-} from './components/WebGpuAmbientField';
+import type { FluidTelemetry } from './components/NavierStokesFluidCanvas';
+import type { AmbientFieldTelemetry } from './components/WebGpuAmbientField';
 import {
   CV_DOSSIERS,
   EXPERIENCE_ROWS,
@@ -42,6 +32,32 @@ import {
   startVoiceSession,
   type VoiceIntent,
 } from './engines/voicePilot';
+
+const AskTinhModal = lazy(() =>
+  import('./components/AskTinhModal').then((m) => ({ default: m.AskTinhModal }))
+);
+const CommandPaletteModal = lazy(() =>
+  import('./components/CommandPaletteModal').then((m) => ({ default: m.CommandPaletteModal }))
+);
+const DistributedSystemsLab = lazy(() =>
+  import('./components/DistributedSystemsLab').then((m) => ({ default: m.DistributedSystemsLab }))
+);
+const FlagshipLightbox = lazy(() =>
+  import('./components/FlagshipLightbox').then((m) => ({ default: m.FlagshipLightbox }))
+);
+const NavierStokesFluidCanvas = lazy(() =>
+  import('./components/NavierStokesFluidCanvas').then((m) => ({
+    default: m.NavierStokesFluidCanvas,
+  }))
+);
+const PlatformInspectorPopover = lazy(() =>
+  import('./components/PlatformInspectorPopover').then((m) => ({
+    default: m.PlatformInspectorPopover,
+  }))
+);
+const WebGpuAmbientField = lazy(() =>
+  import('./components/WebGpuAmbientField').then((m) => ({ default: m.WebGpuAmbientField }))
+);
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -360,7 +376,7 @@ export function App() {
       })),
       {
         id: 'act-theme',
-        code: '07',
+        code: '29',
         group: 'INTERFACE',
         label: theme === 'obsidian' ? 'Switch to Light Paper Surface' : 'Switch to Dark Obsidian Surface',
         hint: 'VIEW TRANSITION',
@@ -368,7 +384,7 @@ export function App() {
       },
       {
         id: 'act-audio',
-        code: '08',
+        code: '30',
         group: 'SPATIAL AUDIO',
         label: audioOn ? 'Mute Stereo Ambient Synth & FFT' : 'Engage Stereo Ambient Synth & FFT',
         hint: '3D STEREO PAN',
@@ -376,7 +392,7 @@ export function App() {
       },
       {
         id: 'act-inspector',
-        code: '09',
+        code: '31',
         group: '2026 APIS',
         label: 'Inspect 11 Platform APIs & Fluid / WebGPU Engines',
         hint: 'POPOVER API',
@@ -389,7 +405,7 @@ export function App() {
       },
       {
         id: 'act-raft',
-        code: '10',
+        code: '32',
         group: 'SYSTEMS LAB',
         label: 'Trigger Raft Leader Failover (Web Worker)',
         hint: 'LIVE CHAOS',
@@ -401,7 +417,7 @@ export function App() {
       },
       ...CV_DOSSIERS.map((cv, idx) => ({
         id: `cv-${cv.id}`,
-        code: `${11 + idx}`,
+        code: `${33 + idx}`,
         group: 'CV PDF',
         label: `${cv.titleEn} (${cv.keywords})`,
         hint: 'PDF',
@@ -409,7 +425,7 @@ export function App() {
       })),
       {
         id: 'contact-zalo',
-        code: '14',
+        code: '36',
         group: 'CONTACT',
         label: 'Zalo QR — (+84) 0931 467 024',
         hint: 'QR',
@@ -430,18 +446,26 @@ export function App() {
   return (
     <div className="min-h-screen relative selection:bg-[var(--accent)] selection:text-white">
       <LiquidGlassFilter />
-      <WebGpuAmbientField
-        enabled={particlesEnabled}
-        theme={theme}
-        scrollVelocityRef={scrollVelocityRef}
-        onTelemetryChange={setAmbientTelemetry}
-      />
-      <NavierStokesFluidCanvas
-        enabled={fluidEnabled}
-        theme={theme}
-        accentHex={effectiveAccentHex}
-        onTelemetryChange={setFluidTelemetry}
-      />
+      {particlesEnabled && (
+        <Suspense fallback={null}>
+          <WebGpuAmbientField
+            enabled={particlesEnabled}
+            theme={theme}
+            scrollVelocityRef={scrollVelocityRef}
+            onTelemetryChange={setAmbientTelemetry}
+          />
+        </Suspense>
+      )}
+      {fluidEnabled && (
+        <Suspense fallback={null}>
+          <NavierStokesFluidCanvas
+            enabled={fluidEnabled}
+            theme={theme}
+            accentHex={effectiveAccentHex}
+            onTelemetryChange={setFluidTelemetry}
+          />
+        </Suspense>
+      )}
       <div className="grain-overlay" />
 
       {/* Compositor Scroll Progress Hairline */}
@@ -667,26 +691,28 @@ export function App() {
       </header>
 
       {/* Native Top-Layer Hardware Inspector Popover (11 Live 2026 APIs) */}
-      <PlatformInspectorPopover
-        fps={fps}
-        ambientTelemetry={ambientTelemetry}
-        fluidTelemetry={fluidTelemetry}
-        aiProbe={aiProbe}
-        fluidEnabled={fluidEnabled}
-        particlesEnabled={particlesEnabled}
-        audioOn={audioOn}
-        accentHex={effectiveAccentHex}
-        onToggleFluid={() => {
-          tactileAudio.playLatch();
-          setFluidEnabled((v) => !v);
-        }}
-        onToggleParticles={() => {
-          tactileAudio.playLatch();
-          setParticlesEnabled((v) => !v);
-        }}
-        onToggleAudio={handleToggleAudio}
-        onAccentChange={setCustomAccentHex}
-      />
+      <Suspense fallback={null}>
+        <PlatformInspectorPopover
+          fps={fps}
+          ambientTelemetry={ambientTelemetry}
+          fluidTelemetry={fluidTelemetry}
+          aiProbe={aiProbe}
+          fluidEnabled={fluidEnabled}
+          particlesEnabled={particlesEnabled}
+          audioOn={audioOn}
+          accentHex={effectiveAccentHex}
+          onToggleFluid={() => {
+            tactileAudio.playLatch();
+            setFluidEnabled((v) => !v);
+          }}
+          onToggleParticles={() => {
+            tactileAudio.playLatch();
+            setParticlesEnabled((v) => !v);
+          }}
+          onToggleAudio={handleToggleAudio}
+          onAccentChange={setCustomAccentHex}
+        />
+      </Suspense>
 
       <main id="top" className="relative z-10">
         {/* =================================================================== */}
@@ -769,7 +795,7 @@ export function App() {
                   rel="noreferrer"
                   className="px-5 py-3 rounded-full border border-[var(--hairline-strong)] bg-[var(--bg-elevated)] text-xs sm:text-sm font-semibold text-[var(--fg-primary)] hover:border-[var(--accent)] transition cursor-pointer"
                 >
-                  <GlyphDecodeText text={lang === 'vi' ? '10 Pro Tools Miễn Phí ↗' : '10 Free Pro Tools ↗'} />
+                  <GlyphDecodeText text={lang === 'vi' ? '12 Pro Tools Miễn Phí ↗' : '12 Free Pro Tools ↗'} />
                 </a>
                 <button
                   type="button"
@@ -881,7 +907,7 @@ export function App() {
                   01 · {lang === 'vi' ? 'Sản Phẩm Live' : 'Selected Works'}
                 </span>
                 <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-[var(--fg-primary)] mt-1">
-                  {lang === 'vi' ? '28 Hệ Thống & 10 Pro Tools' : '28 Live Production Apps'}
+                  {lang === 'vi' ? '28 Hệ Thống & 12 Pro Tools' : '28 Live Production Apps'}
                 </h2>
               </div>
 
@@ -952,12 +978,20 @@ export function App() {
             </div>
 
             <div className="scroll-view-reveal rounded-[20px] overflow-hidden border border-[var(--hairline)] bg-[var(--bg-elevated)]">
-              <DistributedSystemsLab
-                theme={theme}
-                lang={lang}
-                externalCommandSeq={labCmdSeq}
-                externalCommandKind={labCmdKind}
-              />
+              <Suspense
+                fallback={
+                  <div className="min-h-[420px] flex items-center justify-center font-mono-tech text-xs text-[var(--fg-muted)]">
+                    {lang === 'vi' ? 'Đang nạp Phòng Lab Web Worker...' : 'Initializing Web Worker Compute Lab...'}
+                  </div>
+                }
+              >
+                <DistributedSystemsLab
+                  theme={theme}
+                  lang={lang}
+                  externalCommandSeq={labCmdSeq}
+                  externalCommandKind={labCmdKind}
+                />
+              </Suspense>
             </div>
           </div>
         </section>
@@ -1061,7 +1095,6 @@ export function App() {
                   href={cv.href}
                   target="_blank"
                   rel="noreferrer"
-                  data-cursor="OPEN PDF ↗"
                   className="scroll-view-reveal group p-5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] hover:border-[var(--hairline-strong)] transition flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1 min-w-0">
@@ -1133,7 +1166,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>29 Live Apps · 10 Full-Stack .NET 10 / FastAPI Monorepos · 2,003 CI Tests Green · v10.0</span>
+          <span>29 Live Apps · 26/26 Full-Stack .NET 10 / FastAPI Monorepos · 12 Free Pro Tools · 2,870+ CI Tests Green · v11.0</span>
         </div>
       </footer>
 
@@ -1146,24 +1179,36 @@ export function App() {
       />
 
       {/* Ask AI Digital Twin & Instant JD Fit Matcher Modal */}
-      <AskTinhModal
-        open={askAiOpen}
-        lang={lang}
-        onClose={() => setAskAiOpen(false)}
-        onEngineProbe={setAiProbe}
-      />
+      {askAiOpen && (
+        <Suspense fallback={null}>
+          <AskTinhModal
+            open={askAiOpen}
+            lang={lang}
+            onClose={() => setAskAiOpen(false)}
+            onEngineProbe={setAiProbe}
+          />
+        </Suspense>
+      )}
 
       {/* Shared-Element View Transition Lightbox + Live Interactive Sandbox */}
-      <FlagshipLightbox
-        items={FLAGSHIP_WORKS}
-        activeId={lightboxId}
-        lang={lang}
-        onClose={closeLightboxWithTransition}
-        onSelectId={setLightboxId}
-      />
+      {lightboxId !== null && (
+        <Suspense fallback={null}>
+          <FlagshipLightbox
+            items={FLAGSHIP_WORKS}
+            activeId={lightboxId}
+            lang={lang}
+            onClose={closeLightboxWithTransition}
+            onSelectId={setLightboxId}
+          />
+        </Suspense>
+      )}
 
       {/* Command Palette (CMD+K) */}
-      <CommandPaletteModal open={cmdOpen} onClose={() => setCmdOpen(false)} items={commandItems} lang={lang} />
+      {cmdOpen && (
+        <Suspense fallback={null}>
+          <CommandPaletteModal open={cmdOpen} onClose={() => setCmdOpen(false)} items={commandItems} lang={lang} />
+        </Suspense>
+      )}
 
       {/* Zalo QR Modal */}
       {zaloModalOpen && (

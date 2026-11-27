@@ -12,17 +12,24 @@ interface FlagshipDockProps {
 
 const MONOGRAMS: Record<string, string> = {
   'tvt-studio': 'TVT',
-  'tvt-tools': '10T',
-  'maison-vera': 'MV',
-  'atelier-canvas': 'AC',
+  'orbitalflow-saas': 'OF',
+  'vectradoc-rag': 'VD',
+  'fleetpulse-gis': 'FP',
+  'medcore-ehr': 'MC',
   'velox-ev-motors': 'EV',
+  'aeroforge-digital-twin': 'AF',
+  'helios-quant-terminal': 'HQ',
+  'chronos-horology': 'CH',
+  aegispulse: 'AP',
+  'tvt-tools': '12T',
+  'verdict-graph': 'VG',
+  'nexus-lake': 'NL',
+  'maison-vera': 'MV',
+  'aether-acoustics': 'AE',
+  'atelier-canvas': 'AC',
   'lumina-medspa': 'LM',
   'kinetix-proptech': 'KX',
   'pulse-pos-fnb': 'POS',
-  'aether-acoustics': 'AE',
-  'nexus-lake': 'NL',
-  'verdict-graph': 'VG',
-  aegispulse: 'AP',
 };
 
 interface DockEntry {

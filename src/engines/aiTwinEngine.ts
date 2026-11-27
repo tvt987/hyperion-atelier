@@ -1,5 +1,5 @@
 /**
- * HYPERION ATELIER v5.0 — Chrome Built-in On-Device AI (LanguageModel / Gemini Nano)
+ * HYPERION ATELIER v11.0 — Chrome Built-in On-Device AI (LanguageModel / Gemini Nano)
  * + Deterministic Hybrid BM25 / Semantic Vector Digital Twin & Instant JD Fit Matcher.
  */
 
@@ -91,29 +91,29 @@ interface KnowledgeEntry {
 const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   {
     id: 'concurrency-dotnet',
-    title: 'High-Concurrency .NET 8/10 & Retail Core',
+    title: 'High-Concurrency .NET 8/10 & 18 Full-Stack .NET 10 Monorepos',
     terms: [
       '139k', 'rps', 'dotnet', '.net', 'c#', 'concurrency', 'redis', 'dapper', 'sql',
       'voucher', 'double', 'spend', 'cas', 'con cung', '700', 'stores', 'backend', 'aegispulse', 'latency',
     ],
-    metrics: ['139,099 RPS (.NET 10 CAS)', '700+ Retail Stores', '0.00% Double-Spend', 'p99 < 45ms'],
+    metrics: ['139,099 RPS (.NET 10 CAS)', '700+ Retail Stores · 0.00% Leak', '18 Full-Stack .NET 10 Monorepos', 'AegisPulse 118/118 CI · p99 < 45ms'],
     keywords: ['.NET 8/10', 'Dapper', 'Redis Lua', 'Channel<T> WAL', 'SQL Server', 'Polly v8', 'OpenTelemetry'],
     actions: [
-      { label: 'Launch AegisPulse ↗', href: 'https://tvt987.github.io/aegispulse-distributed-sre/', accent: true },
+      { label: 'Launch AegisPulse v4.0 ↗', href: 'https://tvt987.github.io/aegispulse-distributed-sre/', accent: true },
       { label: 'Backend CV PDF ↗', href: './CV_Backend_TruongVanTinh.pdf' },
     ],
   },
   {
     id: 'ai-protocols',
-    title: 'Applied AI, MCP 2.0, A2A & Hybrid RAG',
+    title: 'Applied AI, MCP 2.0, A2A, Hybrid RAG & 8 FastAPI Monorepos',
     terms: [
       'ai', 'mcp', 'a2a', 'ag-ui', 'rag', 'bm25', 'rrf', 'vector', 'hnsw', 'langgraph',
-      'agent', 'multi-agent', 'python', 'fastapi', 'qdrant', 'llm', 'verdict', 'gemini', 'nano',
+      'agent', 'multi-agent', 'python', 'fastapi', 'qdrant', 'llm', 'verdict', 'gemini', 'nano', 'vectradoc',
     ],
-    metrics: ['0.99 Grounded Score', '-52% Token Cost', 'OWASP LLM Top-10 10/10', '70/70 CI Green'],
-    keywords: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'AG-UI SSE', 'LangGraph Fork', 'OTel GenAI'],
+    metrics: ['0.99 Grounded Score', 'Verdict Graph 141/141 CI', '8 Full-Stack FastAPI Monorepos', 'Nexus Lake MCP 121/121 CI'],
+    keywords: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'OWASP LLM Firewall', 'Token Breaker', 'Hybrid RAG (BM25 + RRF)'],
     actions: [
-      { label: 'Launch Verdict Graph ↗', href: 'https://tvt987.github.io/verdict-graph/', accent: true },
+      { label: 'Launch Verdict Graph v4.0 ↗', href: 'https://tvt987.github.io/verdict-graph/', accent: true },
       { label: 'Applied AI CV PDF ↗', href: './CV_AI_TruongVanTinh.pdf' },
     ],
   },
@@ -133,20 +133,21 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: 'Twenty-Five Live Production Web Apps & 10 Pro Tools (1,271 CI Green)',
+    title: '29 Live Production Web Apps · 26/26 Monorepos · 12 Free Pro Tools (2,870+ Live CI)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
       'chronos', 'tourbillon', 'watch', 'helios', 'quant', 'orderbook', 'trading', 'aeroforge', 'factory', 'twin', 'robot', 'kinematics', 'fft',
+      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '2870', '3000', '12',
     ],
-    metrics: ['25 Live Web Apps', '10 Free Pro Tools', '1,271 CI Tests Passing', 'Admin CMS & MBBank Auto-Pay'],
-    keywords: ['TVT Studio v5.5', 'AeroForge 3D Twin', 'Helios Quant LOB', 'Chronos 3D Watch', 'Velox EV v3.0', 'AegisPulse v3.0'],
+    metrics: ['29 Live Web Apps (26/26 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools (73/73 CI)', '2,870+ Live CI Tests (3,000+ GitHub)'],
+    keywords: ['TVT Studio v8.0', 'TVT Tools v2.0 (12 Engines)', 'OrbitalFlow .NET 10', 'VectraDoc FastAPI', 'Verdict Graph v4.0', 'AegisPulse v4.0'],
     actions: [
-      { label: 'TVT Studio Store ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
-      { label: '10 Pro Tools Suite ↗', href: 'https://tvt987.github.io/tvt-tools/' },
-      { label: 'Velox EV 3D ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
+      { label: 'TVT Studio v8.0 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
+      { label: '12 Pro Tools Suite ↗', href: 'https://tvt987.github.io/tvt-tools/' },
+      { label: 'Velox EV 3D v4.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
     ],
   },
 ];
@@ -310,16 +311,16 @@ export function analyzeJdFit(jdText: string): JdFitReport {
     CV_DOSSIERS.find((cv) => cv.id === recommendedTrack) ?? CV_DOSSIERS[1];
 
   const matchedFlagshipIds: string[] = [];
-  if (trackScores.ai > 0) matchedFlagshipIds.push('verdict-graph');
-  if (trackScores.backend > 0) matchedFlagshipIds.push('aegispulse');
+  if (trackScores.ai > 0) matchedFlagshipIds.push('verdict-graph', 'vectradoc-rag');
+  if (trackScores.backend > 0) matchedFlagshipIds.push('aegispulse', 'orbitalflow-saas');
   if (trackScores.fullstack > 0) matchedFlagshipIds.push('atelier-canvas', 'nexus-lake');
   if (matchedFlagshipIds.length === 0) {
-    matchedFlagshipIds.push(FLAGSHIP_WORKS[0].id, FLAGSHIP_WORKS[4].id);
+    matchedFlagshipIds.push(FLAGSHIP_WORKS[0].id, FLAGSHIP_WORKS[1].id, FLAGSHIP_WORKS[2].id);
   }
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 25 live production apps + 10 Pro Tools (1,271 CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos), 12 Free Pro Tools, 2,870+ live CI tests (3,000+ across GitHub). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,

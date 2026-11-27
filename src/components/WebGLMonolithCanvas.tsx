@@ -241,7 +241,7 @@ export function WebGLMonolithCanvas({
       canvas.style.width = '100%';
       canvas.style.height = '100%';
       canvas.style.display = 'block';
-      container.innerHTML = '';
+      container.replaceChildren();
       container.appendChild(canvas);
       const ctx = canvas.getContext('2d');
       let t = 0;
@@ -298,7 +298,7 @@ export function WebGLMonolithCanvas({
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.display = 'block';
-    container.innerHTML = '';
+    container.replaceChildren();
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();

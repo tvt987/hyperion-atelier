@@ -14,9 +14,36 @@ export default defineConfig({
     chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
-        manualChunks: {
-          three: ['three'],
-          motion: ['gsap', 'lenis'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (
+              id.includes('/react/') ||
+              id.includes('\\react\\') ||
+              id.includes('/react-dom/') ||
+              id.includes('\\react-dom\\') ||
+              id.includes('/scheduler/') ||
+              id.includes('\\scheduler\\')
+            ) {
+              return 'react';
+            }
+            if (
+              id.includes('/gsap/') ||
+              id.includes('\\gsap\\') ||
+              id.includes('/lenis/') ||
+              id.includes('\\lenis\\')
+            ) {
+              return 'motion';
+            }
+          }
+          if (
+            id.includes('src/data/atelierContent') ||
+            id.includes('src\\data\\atelierContent') ||
+            id.includes('src/engines/aiTwinEngine') ||
+            id.includes('src\\engines\\aiTwinEngine')
+          ) {
+            return 'data';
+          }
+          return undefined;
         },
       },
     },

@@ -104,7 +104,7 @@ export function PlatformInspectorPopover({
       ok: fluidEnabled && fluidTelemetry.active,
     },
     {
-      label: 'Three.js PBR 3D',
+      label: 'WebGL2 Hardware',
       value: caps.webgl2 ? `ACTIVE · ${fps} FPS` : '2D FALLBACK',
       ok: caps.webgl2,
     },
@@ -179,7 +179,7 @@ export function PlatformInspectorPopover({
             2026 PLATFORM TELEMETRY
           </span>
         </div>
-        <span className="text-[10px] text-[var(--fg-muted)]">v5.1 · 11 APIS</span>
+        <span className="text-[10px] text-[var(--fg-muted)]">v11.0 · 11 APIS</span>
       </div>
 
       {/* Live Engine Toggle Strip */}

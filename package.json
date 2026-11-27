@@ -1,8 +1,8 @@
 {
   "name": "hyperion-atelier",
   "private": true,
-  "version": "5.0.0",
-  "description": "Swiss-Industrial Creative Engineering Atelier & Interactive Distributed/AI Systems Lab — Truong Van Tinh",
+  "version": "11.0.0",
+  "description": "Hyperion Atelier v11.0 — Code-Split Portfolio Command Center (29 Live Apps · 26/26 Full-Stack Monorepos · 12 Free Pro Tools · 2,870+ Live CI Tests) — Truong Van Tinh",
   "type": "module",
   "scripts": {
     "dev": "vite --port 4280",
