@@ -9,17 +9,14 @@ import { DistributedSystemsLab } from './components/DistributedSystemsLab';
 import { FlagshipCard } from './components/FlagshipCard';
 import { FlagshipDock } from './components/FlagshipDock';
 import { FlagshipLightbox } from './components/FlagshipLightbox';
-import { GitHubPulseBar } from './components/GitHubPulseBar';
+import { HeroFlagshipShowcase } from './components/HeroFlagshipShowcase';
 import { GlyphDecodeText, KineticText } from './components/KineticText';
 import { LiquidGlassFilter } from './components/LiquidGlassFilter';
-import { MagneticCursor } from './components/MagneticCursor';
 import {
   NavierStokesFluidCanvas,
   type FluidTelemetry,
 } from './components/NavierStokesFluidCanvas';
-import { OdometerMetric } from './components/OdometerMetric';
 import { PlatformInspectorPopover } from './components/PlatformInspectorPopover';
-import { WebGLMonolithCanvas } from './components/WebGLMonolithCanvas';
 import {
   WebGpuAmbientField,
   type AmbientFieldTelemetry,
@@ -76,8 +73,8 @@ export function App() {
   const [category, setCategory] = useState<WorkCategory>('all');
   const [audioOn, setAudioOn] = useState<boolean>(false);
   const [fluidEnabled, setFluidEnabled] = useState<boolean>(false);
-  const [particlesEnabled, setParticlesEnabled] = useState<boolean>(true);
-  const [fps, setFps] = useState<number>(60);
+  const [particlesEnabled, setParticlesEnabled] = useState<boolean>(false);
+  const [fps] = useState<number>(60);
   const [ambientTelemetry, setAmbientTelemetry] = useState<AmbientFieldTelemetry>({
     backend: 'canvas-fallback',
     particleCount: 900,
@@ -446,7 +443,6 @@ export function App() {
         onTelemetryChange={setFluidTelemetry}
       />
       <div className="grain-overlay" />
-      <MagneticCursor />
 
       {/* Compositor Scroll Progress Hairline */}
       <div className="fixed top-0 left-0 right-0 h-[2px] z-[80] pointer-events-none">
@@ -795,44 +791,83 @@ export function App() {
               </div>
             </div>
 
-            {/* Right 5 Cols: Floating Frameless Audio-Reactive WebGL2 3D Ferrofluid + GLSL Tuner */}
-            <div className="lg:col-span-5 h-[390px] sm:h-[460px] lg:h-[510px]">
-              <WebGLMonolithCanvas
-                theme={theme}
-                accentHex={effectiveAccentHex}
-                onAccentChange={setCustomAccentHex}
-                scrollProgressRef={scrollProgressRef}
-                scrollVelocityRef={scrollVelocityRef}
-                onFpsSample={setFps}
+            {/* Right 5 Cols: Real Live Production Showcase (Zero Meaningless 3D Crystal) */}
+            <div className="lg:col-span-5">
+              <HeroFlagshipShowcase
+                works={FLAGSHIP_WORKS}
+                lang={lang}
+                onInspect={(workId) => openLightboxWithTransition(workId)}
               />
             </div>
           </div>
 
-          {/* Floating 4-Metric Odometer Signal Ribbon */}
-          <div className="max-w-[1200px] mx-auto mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
-              { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
-              { value: '25', labelEn: 'Live Apps & 10 Tools', labelVi: 'Web App & 10 Pro Tools' },
-              { value: '1271', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
-            ].map((m) => (
-              <div
-                key={m.value}
-                className="px-5 py-4 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline)] flex items-baseline justify-between gap-2"
+          {/* Direct Executive Contact & CV Bar (Moved Up to Hero as Requested) */}
+          <div
+            data-testid="hero-contact-strip"
+            className="max-w-[1200px] mx-auto mt-9 px-4 py-3.5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline-strong)] flex flex-col xl:flex-row xl:items-center justify-between gap-3"
+          >
+            <div className="flex flex-wrap items-center gap-1.5 font-mono-tech text-[11px]">
+              <span className="inline-flex items-center gap-1.5 pr-1.5 font-semibold text-[var(--fg-primary)]">
+                <span style={{ backgroundColor: 'var(--signal-ok)' }} className="w-2 h-2 rounded-full shrink-0" />
+                {lang === 'vi' ? 'Liên Hệ:' : 'Contact:'}
+              </span>
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                className="px-3 py-1.5 rounded-full bg-[var(--bg-panel)] border border-[var(--hairline)] text-[var(--fg-primary)] hover:border-[var(--accent)] transition cursor-pointer"
               >
-                <OdometerMetric
-                  value={m.value}
-                  className="font-display text-2xl sm:text-3xl font-extrabold text-[var(--fg-primary)]"
-                />
-                <span className="font-mono-tech text-[10.5px] text-[var(--fg-muted)] uppercase text-right">
-                  {lang === 'vi' ? m.labelVi : m.labelEn}
-                </span>
-              </div>
-            ))}
-          </div>
+                {copiedEmail ? 'Copied!' : 'tinhkun102@gmail.com'}
+              </button>
+              <a
+                href="tel:+84931467024"
+                className="px-3 py-1.5 rounded-full bg-[var(--bg-panel)] border border-[var(--hairline)] text-[var(--fg-primary)] hover:border-[var(--accent)] transition"
+              >
+                0931 467 024
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  tactileAudio.playLatch();
+                  setZaloModalOpen(true);
+                }}
+                style={{ backgroundColor: 'var(--accent)', color: '#FFFFFF' }}
+                className="px-3 py-1.5 rounded-full font-semibold hover:opacity-90 transition cursor-pointer"
+              >
+                Zalo QR
+              </button>
+              <a
+                href="https://github.com/tvt987"
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1.5 rounded-full bg-[var(--bg-panel)] border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition"
+              >
+                GitHub ↗
+              </a>
+              <a
+                href="https://www.linkedin.com/in/tr%C6%B0%C6%A1ng-v%C4%83n-t%C3%ACnh-651b12289/"
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1.5 rounded-full bg-[var(--bg-panel)] border border-[var(--hairline)] text-[var(--fg-secondary)] hover:text-[var(--fg-primary)] transition"
+              >
+                LinkedIn ↗
+              </a>
+            </div>
 
-          {/* 1-Row Live GitHub Engineering Pulse Strip */}
-          <GitHubPulseBar />
+            <div className="flex flex-wrap items-center gap-1.5 font-mono-tech text-[11px] border-t xl:border-t-0 pt-2.5 xl:pt-0 border-[var(--hairline)]">
+              <span className="text-[var(--fg-muted)] uppercase tracking-wider pr-0.5">CV:</span>
+              {CV_DOSSIERS.map((cv) => (
+                <a
+                  key={cv.id}
+                  href={cv.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-2.5 py-1.5 rounded-full bg-[var(--bg-panel)] border border-[var(--hairline)] text-[var(--fg-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition"
+                >
+                  {lang === 'vi' ? cv.titleVi : cv.titleEn} ↗
+                </a>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* =================================================================== */}
