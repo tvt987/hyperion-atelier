@@ -8,12 +8,12 @@ interface HeroFlagshipShowcaseProps {
 }
 
 const SPOTLIGHT_IDS = [
+  'orbitalflow-saas',
+  'vectradoc-rag',
+  'fleetpulse-gis',
+  'medcore-ehr',
   'velox-ev-motors',
   'aeroforge-digital-twin',
-  'helios-quant-terminal',
-  'chronos-horology',
-  'aurelia-resort',
-  'tvt-studio',
 ];
 
 export function HeroFlagshipShowcase({

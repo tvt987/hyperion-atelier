@@ -91,10 +91,10 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(parseVoiceCommand('unrecognized silence')).toBeNull();
   });
 
-  it('registers all 24 live flagship production apps with unique IDs and valid live URLs', () => {
-    expect(FLAGSHIP_WORKS.length).toBe(24);
+  it('registers all 28 live flagship production apps with unique IDs and valid live URLs', () => {
+    expect(FLAGSHIP_WORKS.length).toBe(28);
     const ids = new Set(FLAGSHIP_WORKS.map((w) => w.id));
-    expect(ids.size).toBe(24);
+    expect(ids.size).toBe(28);
     for (const work of FLAGSHIP_WORKS) {
       expect(work.liveUrl).toMatch(/^https:\/\/tvt987\.github\.io\//);
       expect(work.previewImage).toMatch(/^previews\/[a-z0-9-]+\.webp$/);
