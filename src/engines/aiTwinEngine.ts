@@ -110,7 +110,7 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
       'ai', 'mcp', 'a2a', 'ag-ui', 'rag', 'bm25', 'rrf', 'vector', 'hnsw', 'langgraph',
       'agent', 'multi-agent', 'python', 'fastapi', 'qdrant', 'llm', 'verdict', 'gemini', 'nano',
     ],
-    metrics: ['0.99 Grounded Score', '-52% Token Cost', '384-d HNSW + BM25 RRF', '43/43 CI Green'],
+    metrics: ['0.99 Grounded Score', '-52% Token Cost', 'OWASP LLM Top-10 10/10', '70/70 CI Green'],
     keywords: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'AG-UI SSE', 'LangGraph Fork', 'OTel GenAI'],
     actions: [
       { label: 'Launch Verdict Graph ↗', href: 'https://tvt987.github.io/verdict-graph/', accent: true },
@@ -133,15 +133,15 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: 'Twenty-Two Live Production Web Apps & 10 Pro Tools (793 CI Green)',
+    title: 'Twenty-Two Live Production Web Apps & 10 Pro Tools (1,003 CI Green)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
     ],
-    metrics: ['22 Live Web Apps', '10 Free Pro Tools', '793 CI Tests Passing', 'Live MBBank SePay Auto-Pay'],
-    keywords: ['TVT Studio v4.0', 'Velox EV 3D v2.0', 'Zenith Wealth v2.0', 'CodaHR 2026 v2.0', 'Meridian 3D v2.0', 'Aurelia v2.0'],
+    metrics: ['22 Live Web Apps', '10 Free Pro Tools', '1,003 CI Tests Passing', 'Admin CMS & MBBank Auto-Pay'],
+    keywords: ['TVT Studio v5.0', 'Velox EV v3.0 HDRI', 'AegisPulse v3.0', 'Verdict Graph v3.0', 'Nexus Lake v3.0', 'Atelier Canvas v4.0'],
     actions: [
       { label: 'TVT Studio Store ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
       { label: '10 Pro Tools Suite ↗', href: 'https://tvt987.github.io/tvt-tools/' },
@@ -318,7 +318,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 22 live production apps + 10 Pro Tools (793 CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 22 live production apps + 10 Pro Tools (1,003 CI green). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
