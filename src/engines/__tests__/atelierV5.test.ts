@@ -107,10 +107,10 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     }
   });
 
-  it('verifies all 26 full-stack monorepos cite .NET 10 or FastAPI plus TVT Studio v8.0 & TVT Tools v2.0 (2,850+ showcase CI)', () => {
+  it('verifies all 26 full-stack monorepos cite .NET 10 or FastAPI plus TVT Studio v8.5 & TVT Tools v2.0 (3,274 showcase CI)', () => {
     const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
     const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
-    expect(studio?.version).toBe('v8.0 · Supabase RLS');
+    expect(studio?.version).toBe('v8.5 · Supabase RLS');
     expect(studio?.ciBadge).toBe('49/49 CI');
     expect(tools?.version).toBe('v2.0 · 12 Engines');
     expect(tools?.ciBadge).toBe('73/73 CI');
@@ -130,22 +130,22 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(2853);
+    expect(totalShowcaseTests).toBe(3274);
   });
 
-  it('surfaces v11.0 portfolio facts (29 live apps, 26/26 monorepos, 12 pro tools, 2,870+ live CI) in AI Twin & JD Fit', () => {
+  it('surfaces v11.5 portfolio facts (29 live apps, 26/26 monorepos, 12 pro tools, 3,294 live CI) in AI Twin & JD Fit', () => {
     const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
     expect(portfolioAns.id).toBe('live-flagships');
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
     expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('2,870+ Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('3,294 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('2,870+ live CI tests');
+    expect(report.tailoredPitch).toContain('3,294 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {

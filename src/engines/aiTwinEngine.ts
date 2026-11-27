@@ -96,10 +96,10 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
       '139k', 'rps', 'dotnet', '.net', 'c#', 'concurrency', 'redis', 'dapper', 'sql',
       'voucher', 'double', 'spend', 'cas', 'con cung', '700', 'stores', 'backend', 'aegispulse', 'latency',
     ],
-    metrics: ['139,099 RPS (.NET 10 CAS)', '700+ Retail Stores · 0.00% Leak', '18 Full-Stack .NET 10 Monorepos', 'AegisPulse 118/118 CI · p99 < 45ms'],
+    metrics: ['139,099 RPS (.NET 10 CAS)', '700+ Retail Stores · 0.00% Leak', '18 Full-Stack .NET 10 Monorepos', 'AegisPulse v5.0 150/150 CI · P50 1.26ms'],
     keywords: ['.NET 8/10', 'Dapper', 'Redis Lua', 'Channel<T> WAL', 'SQL Server', 'Polly v8', 'OpenTelemetry'],
     actions: [
-      { label: 'Launch AegisPulse v4.0 ↗', href: 'https://tvt987.github.io/aegispulse-distributed-sre/', accent: true },
+      { label: 'Launch AegisPulse v5.0 ↗', href: 'https://tvt987.github.io/aegispulse-distributed-sre/', accent: true },
       { label: 'Backend CV PDF ↗', href: './CV_Backend_TruongVanTinh.pdf' },
     ],
   },
@@ -133,21 +133,21 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: '29 Live Production Web Apps · 26/26 Monorepos · 12 Free Pro Tools (2,870+ Live CI)',
+    title: '29 Live Production Web Apps · 26/26 Monorepos · 12 Free Pro Tools (3,294 Live CI)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
       'chronos', 'tourbillon', 'watch', 'helios', 'quant', 'orderbook', 'trading', 'aeroforge', 'factory', 'twin', 'robot', 'kinematics', 'fft',
-      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '2870', '3000', '12',
+      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '3294', '3400', '12',
     ],
-    metrics: ['29 Live Web Apps (26/26 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools (73/73 CI)', '2,870+ Live CI Tests (3,000+ GitHub)'],
-    keywords: ['TVT Studio v8.0', 'TVT Tools v2.0 (12 Engines)', 'OrbitalFlow .NET 10', 'VectraDoc FastAPI', 'Verdict Graph v4.0', 'AegisPulse v4.0'],
+    metrics: ['29 Live Web Apps (26/26 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools (73/73 CI)', '3,294 Live CI Tests (3,400+ GitHub)'],
+    keywords: ['TVT Studio v8.5', 'TVT Tools v2.0 (12 Engines)', 'OrbitalFlow v3.0', 'VectraDoc v3.0', 'Velox EV v5.0', 'AegisPulse v5.0'],
     actions: [
-      { label: 'TVT Studio v8.0 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
+      { label: 'TVT Studio v8.5 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
       { label: '12 Pro Tools Suite ↗', href: 'https://tvt987.github.io/tvt-tools/' },
-      { label: 'Velox EV 3D v4.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
+      { label: 'Velox EV 3D v5.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
     ],
   },
 ];
@@ -320,7 +320,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos), 12 Free Pro Tools, 2,870+ live CI tests (3,000+ across GitHub). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos), 12 Free Pro Tools, 3,294 live CI tests (3,400+ across GitHub). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
