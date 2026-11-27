@@ -830,7 +830,7 @@ export function App() {
           {/* Direct Executive Contact & CV Bar (Moved Up to Hero as Requested) */}
           <div
             data-testid="hero-contact-strip"
-            className="max-w-[1200px] mx-auto mt-9 px-4 py-3.5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline-strong)] flex flex-col xl:flex-row xl:items-center justify-between gap-3"
+            className="max-w-[1200px] mx-auto mt-9 px-4 py-3.5 rounded-2xl bg-[var(--bg-elevated)] border border-[var(--hairline-strong)] shadow-[0_1px_3px_rgba(17,19,24,0.05)] flex flex-col xl:flex-row xl:items-center justify-between gap-3"
           >
             <div className="flex flex-wrap items-center gap-1.5 font-mono-tech text-[11px]">
               <span className="inline-flex items-center gap-1.5 pr-1.5 font-semibold text-[var(--fg-primary)]">
@@ -1166,7 +1166,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>29 Live Apps · 26/26 Full-Stack .NET 10 / FastAPI Monorepos · 12 Free Pro Tools · 2,870+ CI Tests Green · v11.0</span>
+          <span>29 Live Apps · 26/26 Full-Stack .NET 10 / FastAPI Monorepos · 12 Free Pro Tools · 3,481 Live CI Tests · v12.0</span>
         </div>
       </footer>
 

@@ -214,12 +214,12 @@ export function DistributedSystemsLab({
       ctx.scale(dpr, dpr);
 
       const isPaper = theme === 'paper';
-      const bg = isPaper ? '#FAF8F4' : '#0B0B0E';
-      const gridStroke = isPaper ? 'rgba(11,11,13,0.065)' : 'rgba(242,239,233,0.055)';
-      const ringStroke = isPaper ? 'rgba(11,11,13,0.20)' : 'rgba(242,239,233,0.18)';
-      const fgPrimary = isPaper ? '#0B0B0D' : '#F2EFE9';
-      const fgMuted = isPaper ? '#78746B' : '#736F67';
-      const accent = isPaper ? '#D93B00' : '#FF4D00';
+      const bg = isPaper ? '#F8F7F4' : '#0B0B0E';
+      const gridStroke = isPaper ? 'rgba(17,19,24,0.06)' : 'rgba(242,239,233,0.055)';
+      const ringStroke = isPaper ? 'rgba(17,19,24,0.20)' : 'rgba(242,239,233,0.18)';
+      const fgPrimary = isPaper ? '#111318' : '#F2EFE9';
+      const fgMuted = isPaper ? '#5C606D' : '#736F67';
+      const accent = isPaper ? '#C83700' : '#FF4D00';
       const okColor = isPaper ? '#15803D' : '#B8F335';
 
       ctx.fillStyle = bg;

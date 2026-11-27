@@ -10,7 +10,7 @@ export interface AccentSwatch {
 }
 
 export const DEFAULT_ACCENT_OBSIDIAN = '#FF4D00';
-export const DEFAULT_ACCENT_PAPER = '#D93B00';
+export const DEFAULT_ACCENT_PAPER = '#C83700';
 
 export const ACCENT_SWATCHES: AccentSwatch[] = [
   { name: 'Vermilion', hex: '#FF4D00' },

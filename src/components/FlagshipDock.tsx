@@ -129,7 +129,7 @@ export function FlagshipDock({
     };
 
     const commonClasses =
-      'relative w-10 h-10 rounded-xl border border-[var(--hairline)] font-mono-tech text-[11px] font-bold tracking-tight flex items-center justify-center transition-[transform,background-color,color,border-color] duration-150 ease-out cursor-pointer select-none';
+      'relative w-10 h-10 rounded-xl border border-[var(--hairline-strong)] font-mono-tech text-[11px] font-bold tracking-tight flex items-center justify-center shadow-[0_1px_2px_rgba(17,19,24,0.06)] transition-[transform,background-color,color,border-color] duration-150 ease-out cursor-pointer select-none';
 
     const tooltipEl = (
       <span

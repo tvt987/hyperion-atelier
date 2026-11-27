@@ -179,7 +179,7 @@ export function PlatformInspectorPopover({
             2026 PLATFORM TELEMETRY
           </span>
         </div>
-        <span className="text-[10px] text-[var(--fg-muted)]">v11.0 · 11 APIS</span>
+        <span className="text-[10px] text-[var(--fg-muted)]">v12.0 · 11 APIS</span>
       </div>
 
       {/* Live Engine Toggle Strip */}
