@@ -1133,7 +1133,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>29 Live Apps · 10 Pro Tools · 1,547 CI · Multi-Tenant SaaS · Hybrid RAG · GIS CVRP · HL7 FHIR · v9.0</span>
+          <span>29 Live Apps · 10 Full-Stack .NET 10 / FastAPI Monorepos · 2,003 CI Tests Green · v10.0</span>
         </div>
       </footer>
 
