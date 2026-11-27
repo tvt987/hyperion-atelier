@@ -814,7 +814,7 @@ export function App() {
               { value: '700+', labelEn: 'Retail Stores', labelVi: 'Siêu Thị Production' },
               { value: '139K', labelEn: 'Peak RPS (.NET 10)', labelVi: 'Đỉnh Tải RPS (.NET 10)' },
               { value: '22+', labelEn: 'Live Apps & 10 Tools', labelVi: 'Web App & 10 Pro Tools' },
-              { value: '660+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
+              { value: '793+', labelEn: 'CI Tests Green', labelVi: 'Test Tự Động Xanh' },
             ].map((m) => (
               <div
                 key={m.value}
@@ -1098,7 +1098,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>22 Live Apps · 10 Pro Tools · 660+ CI · WebGPU WGSL · Liquid Glass · v6.0</span>
+          <span>22 Live Apps · 10 Pro Tools · 793+ CI · WebGPU WGSL · Liquid Glass · v6.5</span>
         </div>
       </footer>
 
