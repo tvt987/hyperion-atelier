@@ -112,7 +112,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     }
   });
 
-  it('verifies all 26 full-stack monorepos at v3.0–v6.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,020 showcase CI)', () => {
+  it('verifies all 26 full-stack monorepos at v3.0–v7.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,301 showcase CI)', () => {
     const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
     const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
     expect(studio?.version).toBe('v9.0 · Supabase RLS');
@@ -123,7 +123,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     const monorepos = FLAGSHIP_WORKS.filter((w) => w.id !== 'tvt-studio' && w.id !== 'tvt-tools');
     expect(monorepos).toHaveLength(26);
     for (const m of monorepos) {
-      expect(m.version).toMatch(/^v[3-6]\.0 · /);
+      expect(m.version).toMatch(/^v[3-7]\.0 · /);
     }
 
     const dotnetRepos = monorepos.filter((w) => w.version.includes('.NET 10'));
@@ -138,15 +138,23 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(4217);
+    expect(totalShowcaseTests).toBe(4301);
   });
 
-  it('verifies Wave 1 masterwork upgrades across Velox, Meridian, Zenith, Verdict Graph & AegisPulse', () => {
+  it('verifies Master Interactive flagship upgrades across Velox v7, AeroForge v5, Helios v5, Verdict v5 & AegisPulse v6', () => {
     const byId = new Map(FLAGSHIP_WORKS.map((w) => [w.id, w]));
 
-    expect(byId.get('velox-ev-motors')?.version).toBe('v6.0 · .NET 10');
-    expect(byId.get('velox-ev-motors')?.ciBadge).toBe('175/175 CI');
-    expect(byId.get('velox-ev-motors')?.highlightMetric).toBe('.NET 10 1.42ms · Lofted 3D · 1600p Poster');
+    expect(byId.get('velox-ev-motors')?.version).toBe('v7.0 · .NET 10');
+    expect(byId.get('velox-ev-motors')?.ciBadge).toBe('203/203 CI');
+    expect(byId.get('velox-ev-motors')?.highlightMetric).toBe('.NET 10 1.42ms · 3D Test Drive · Ghost Race');
+
+    expect(byId.get('aeroforge-digital-twin')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('aeroforge-digital-twin')?.ciBadge).toBe('259/259 CI');
+    expect(byId.get('aeroforge-digital-twin')?.highlightMetric).toBe('.NET 10 1.27ms · Live CNC Sparks · A* AGV Maze');
+
+    expect(byId.get('helios-quant-terminal')?.version).toBe('v5.0 · FastAPI');
+    expect(byId.get('helios-quant-terminal')?.ciBadge).toBe('284/284 CI');
+    expect(byId.get('helios-quant-terminal')?.highlightMetric).toBe('FastAPI 1.95ms · Bookmap Heatmap · Live Bot Battle');
 
     expect(byId.get('meridian-logistics')?.version).toBe('v4.0 · .NET 10');
     expect(byId.get('meridian-logistics')?.ciBadge).toBe('145/145 CI');
@@ -215,19 +223,19 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(DEFAULT_ACCENT_PAPER).not.toBe(DEFAULT_ACCENT_OBSIDIAN);
   });
 
-  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v6 monorepos, 12 pro tools, 4,044 live CI) in AI Twin & JD Fit', () => {
+  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v7 monorepos, 12 pro tools, 4,325 live CI) in AI Twin & JD Fit', () => {
     const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
     expect(portfolioAns.id).toBe('live-flagships');
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
     expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools v2.5'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('4,241 Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('4,325 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('4,241 live CI tests');
+    expect(report.tailoredPitch).toContain('4,325 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {

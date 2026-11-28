@@ -133,21 +133,21 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: '29 Live Production Web Apps · 26/26 Monorepos (v3–v6) · 12 Free Pro Tools (4,241 Live CI)',
+    title: '29 Live Production Web Apps · 26/26 Monorepos (v3–v7) · 12 Free Pro Tools (4,325 Live CI)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
       'chronos', 'tourbillon', 'watch', 'helios', 'quant', 'orderbook', 'trading', 'aeroforge', 'factory', 'twin', 'robot', 'kinematics', 'fft',
-      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '4241', '4217', '12',
+      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '4325', '4301', '12',
     ],
-    metrics: ['29 Live Web Apps (26/26 v3–v6 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools v2.5 (95/95 CI)', '4,241 Live CI Tests (26/26 OpenAPI)'],
-    keywords: ['TVT Studio v9.0', 'TVT Tools v2.5 (12 Engines)', 'OrbitalFlow v4.0', 'VectraDoc v4.0', 'Velox EV v6.0', 'AegisPulse v6.0'],
+    metrics: ['29 Live Web Apps (26/26 v3–v7 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools v2.5 (95/95 CI)', '4,325 Live CI Tests (26/26 OpenAPI)'],
+    keywords: ['Velox EV v7.0 (3D Drive)', 'AeroForge v5.0 (A* AGV)', 'Helios v5.0 (Bookmap)', 'TVT Studio v9.0', 'AegisPulse v6.0', 'Verdict v5.0'],
     actions: [
-      { label: 'TVT Studio v9.0 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
-      { label: '12 Pro Tools v2.5 ↗', href: 'https://tvt987.github.io/tvt-tools/' },
-      { label: 'Velox EV 3D v6.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
+      { label: 'Velox EV 3D Drive v7.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/', accent: true },
+      { label: 'AeroForge 3D v5.0 ↗', href: 'https://tvt987.github.io/aeroforge-digital-twin/' },
+      { label: 'Helios Bookmap v5.0 ↗', href: 'https://tvt987.github.io/helios-quant-terminal/' },
     ],
   },
 ];
@@ -320,7 +320,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos at v3–v6), 12 Free Pro Tools, 4,241 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos at v3–v7), 12 Free Pro Tools, 4,325 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
