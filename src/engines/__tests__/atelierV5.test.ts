@@ -112,7 +112,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     }
   });
 
-  it('verifies all 26 full-stack monorepos at v3.0–v7.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,476 showcase CI)', () => {
+  it('verifies all 26 full-stack monorepos at v3.0–v7.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,661 showcase CI)', () => {
     const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
     const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
     expect(studio?.version).toBe('v9.0 · Supabase RLS');
@@ -138,10 +138,10 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(4476);
+    expect(totalShowcaseTests).toBe(4661);
   });
 
-  it('verifies all 9 Master Interactive flagship upgrades across Velox, AeroForge, Helios, Chronos, Aether, AegisPulse, Maison, FleetPulse & Verdict', () => {
+  it('verifies all 15 Master Interactive flagship upgrades across Waves 1, 2 & 3 (9 Three.js 3D + 6 GPU Canvas/WebGL2)', () => {
     const byId = new Map(FLAGSHIP_WORKS.map((w) => [w.id, w]));
 
     expect(byId.get('velox-ev-motors')?.version).toBe('v7.0 · .NET 10');
@@ -175,6 +175,31 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(byId.get('verdict-graph')?.version).toBe('v6.0 · FastAPI');
     expect(byId.get('verdict-graph')?.ciBadge).toBe('210/210 CI');
     expect(byId.get('verdict-graph')?.highlightMetric).toBe('Drag-Wire Debugger · Breakpoints · Dual Fork -54%');
+
+    // Wave 3 Master Interactive Flagships
+    expect(byId.get('vectradoc-rag')?.version).toBe('v5.0 · FastAPI');
+    expect(byId.get('vectradoc-rag')?.ciBadge).toBe('243/243 CI');
+    expect(byId.get('vectradoc-rag')?.highlightMetric).toBe('3D HNSW Nebula · Poison Cage 0% · MRR 100%');
+
+    expect(byId.get('medcore-ehr')?.version).toBe('v4.0 · FastAPI');
+    expect(byId.get('medcore-ehr')?.ciBadge).toBe('190/190 CI');
+    expect(byId.get('medcore-ehr')?.highlightMetric).toBe('3D Beating Heart · 200J Defib · FHIR 1.91ms');
+
+    expect(byId.get('nexus-lake')?.version).toBe('v6.0 · FastAPI + MCP');
+    expect(byId.get('nexus-lake')?.ciBadge).toBe('187/187 CI');
+    expect(byId.get('nexus-lake')?.highlightMetric).toBe('100K GPU Lasso→SQL · 3D Cube · Kafka CDC');
+
+    expect(byId.get('orbitalflow-saas')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('orbitalflow-saas')?.ciBadge).toBe('219/219 CI');
+    expect(byId.get('orbitalflow-saas')?.highlightMetric).toBe('.NET 10 1.56ms · Canary Rollback · Direct CPM');
+
+    expect(byId.get('nordic-home-atelier')?.version).toBe('v4.0 · .NET 10');
+    expect(byId.get('nordic-home-atelier')?.ciBadge).toBe('152/152 CI');
+    expect(byId.get('nordic-home-atelier')?.highlightMetric).toBe('3D Sunlit Penthouse · NKBA Lasers · POV Walk');
+
+    expect(byId.get('atelier-canvas')?.version).toBe('v7.0 · .NET 10');
+    expect(byId.get('atelier-canvas')?.ciBadge).toBe('167/167 CI');
+    expect(byId.get('atelier-canvas')?.highlightMetric).toBe('WebGL2 GLSL Shaders · 3D Z-Stack · WCAG AAA');
   });
 
   it('verifies all 8 locally measured production API endpoints in VERIFIED_API_BENCHMARKS (HTTP 200, ordered P50/P95/P99)', () => {
@@ -227,19 +252,19 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(DEFAULT_ACCENT_PAPER).not.toBe(DEFAULT_ACCENT_OBSIDIAN);
   });
 
-  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v7 monorepos, 12 pro tools, 4,500 live CI) in AI Twin & JD Fit', () => {
+  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v7 monorepos, 12 pro tools, 4,685 live CI) in AI Twin & JD Fit', () => {
     const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
     expect(portfolioAns.id).toBe('live-flagships');
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
     expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools v2.5'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('4,500 Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('4,685 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('4,500 live CI tests');
+    expect(report.tailoredPitch).toContain('4,685 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {
