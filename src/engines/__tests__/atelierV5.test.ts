@@ -112,16 +112,19 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     }
   });
 
-  it('verifies all 26 full-stack monorepos cite .NET 10 or FastAPI plus TVT Studio v8.5 & TVT Tools v2.0 (3,457 showcase CI)', () => {
+  it('verifies all 26 full-stack monorepos at v3.0–v6.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,020 showcase CI)', () => {
     const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
     const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
-    expect(studio?.version).toBe('v8.5 · Supabase RLS');
-    expect(studio?.ciBadge).toBe('49/49 CI');
-    expect(tools?.version).toBe('v2.0 · 12 Engines');
-    expect(tools?.ciBadge).toBe('73/73 CI');
+    expect(studio?.version).toBe('v9.0 · Supabase RLS');
+    expect(studio?.ciBadge).toBe('62/62 CI');
+    expect(tools?.version).toBe('v2.5 · 12 Engines');
+    expect(tools?.ciBadge).toBe('95/95 CI');
 
     const monorepos = FLAGSHIP_WORKS.filter((w) => w.id !== 'tvt-studio' && w.id !== 'tvt-tools');
     expect(monorepos).toHaveLength(26);
+    for (const m of monorepos) {
+      expect(m.version).toMatch(/^v[3-6]\.0 · /);
+    }
 
     const dotnetRepos = monorepos.filter((w) => w.version.includes('.NET 10'));
     const fastapiRepos = monorepos.filter((w) => w.version.includes('FastAPI'));
@@ -135,7 +138,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(3457);
+    expect(totalShowcaseTests).toBe(4020);
   });
 
   it('verifies Wave 1 masterwork upgrades across Velox, Meridian, Zenith, Verdict Graph & AegisPulse', () => {
@@ -212,19 +215,19 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(DEFAULT_ACCENT_PAPER).not.toBe(DEFAULT_ACCENT_OBSIDIAN);
   });
 
-  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 monorepos, 12 pro tools, 3,481 live CI) in AI Twin & JD Fit', () => {
+  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v6 monorepos, 12 pro tools, 4,044 live CI) in AI Twin & JD Fit', () => {
     const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
     expect(portfolioAns.id).toBe('live-flagships');
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
-    expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('3,481 Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools v2.5'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('4,044 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('3,481 live CI tests');
+    expect(report.tailoredPitch).toContain('4,044 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {

@@ -110,7 +110,7 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
       'ai', 'mcp', 'a2a', 'ag-ui', 'rag', 'bm25', 'rrf', 'vector', 'hnsw', 'langgraph',
       'agent', 'multi-agent', 'python', 'fastapi', 'qdrant', 'llm', 'verdict', 'gemini', 'nano', 'vectradoc',
     ],
-    metrics: ['0.99 Grounded Score', 'Verdict Graph v5.0 181/181 CI', '8 Full-Stack FastAPI Monorepos', 'Nexus Lake MCP 121/121 CI'],
+    metrics: ['0.99 Grounded Score', 'Verdict Graph v5.0 181/181 CI', '8 Full-Stack FastAPI Monorepos', 'Nexus Lake v5.0 157/157 CI'],
     keywords: ['Python 3.12', 'FastAPI', 'MCP Server 2.0', 'A2A Protocol', 'OWASP LLM10', 'Pareto Router', 'Hybrid RAG (BM25 + RRF)'],
     actions: [
       { label: 'Launch Verdict Graph v5.0 ↗', href: 'https://tvt987.github.io/verdict-graph/', accent: true },
@@ -133,20 +133,20 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: '29 Live Production Web Apps · 26/26 Monorepos · 12 Free Pro Tools (3,481 Live CI)',
+    title: '29 Live Production Web Apps · 26/26 Monorepos (v3–v6) · 12 Free Pro Tools (4,044 Live CI)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
       'chronos', 'tourbillon', 'watch', 'helios', 'quant', 'orderbook', 'trading', 'aeroforge', 'factory', 'twin', 'robot', 'kinematics', 'fft',
-      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '3481', '3457', '12',
+      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '4044', '4020', '12',
     ],
-    metrics: ['29 Live Web Apps (26/26 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools (73/73 CI)', '3,481 Live CI Tests (26/26 OpenAPI)'],
-    keywords: ['TVT Studio v8.5', 'TVT Tools v2.0 (12 Engines)', 'OrbitalFlow v3.0', 'VectraDoc v3.0', 'Velox EV v6.0', 'AegisPulse v6.0'],
+    metrics: ['29 Live Web Apps (26/26 v3–v6 Monorepos)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools v2.5 (95/95 CI)', '4,044 Live CI Tests (26/26 OpenAPI)'],
+    keywords: ['TVT Studio v9.0', 'TVT Tools v2.5 (12 Engines)', 'OrbitalFlow v3.0', 'VectraDoc v3.0', 'Velox EV v6.0', 'AegisPulse v6.0'],
     actions: [
-      { label: 'TVT Studio v8.5 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
-      { label: '12 Pro Tools Suite ↗', href: 'https://tvt987.github.io/tvt-tools/' },
+      { label: 'TVT Studio v9.0 ↗', href: 'https://tvt987.github.io/tvt-studio/', accent: true },
+      { label: '12 Pro Tools v2.5 ↗', href: 'https://tvt987.github.io/tvt-tools/' },
       { label: 'Velox EV 3D v6.0 ↗', href: 'https://tvt987.github.io/velox-ev-motors/' },
     ],
   },
@@ -320,7 +320,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos), 12 Free Pro Tools, 3,481 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos at v3–v6), 12 Free Pro Tools, 4,044 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
