@@ -112,7 +112,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     }
   });
 
-  it('verifies all 26 full-stack monorepos at v3.0–v7.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,661 showcase CI)', () => {
+  it('verifies all 26 full-stack monorepos at v3.0–v7.0 plus TVT Studio v9.0 & TVT Tools v2.5 (4,851 showcase CI)', () => {
     const studio = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-studio');
     const tools = FLAGSHIP_WORKS.find((w) => w.id === 'tvt-tools');
     expect(studio?.version).toBe('v9.0 · Supabase RLS');
@@ -138,10 +138,10 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(4661);
+    expect(totalShowcaseTests).toBe(4851);
   });
 
-  it('verifies all 15 Master Interactive flagship upgrades across Waves 1, 2 & 3 (9 Three.js 3D + 6 GPU Canvas/WebGL2)', () => {
+  it('verifies all 21 Master Interactive flagship upgrades across Waves 1–4 (15 Three.js 3D + 6 GPU Canvas/WebGL2)', () => {
     const byId = new Map(FLAGSHIP_WORKS.map((w) => [w.id, w]));
 
     expect(byId.get('velox-ev-motors')?.version).toBe('v7.0 · .NET 10');
@@ -200,6 +200,31 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(byId.get('atelier-canvas')?.version).toBe('v7.0 · .NET 10');
     expect(byId.get('atelier-canvas')?.ciBadge).toBe('167/167 CI');
     expect(byId.get('atelier-canvas')?.highlightMetric).toBe('WebGL2 GLSL Shaders · 3D Z-Stack · WCAG AAA');
+
+    // Wave 4 Master Interactive 3D Flagships
+    expect(byId.get('meridian-logistics')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('meridian-logistics')?.ciBadge).toBe('177/177 CI');
+    expect(byId.get('meridian-logistics')?.highlightMetric).toBe('3D STS Port · SOLAS Heel/GM · Auto-Trim');
+
+    expect(byId.get('kinetix-proptech')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('kinetix-proptech')?.ciBadge).toBe('151/151 CI');
+    expect(byId.get('kinetix-proptech')?.highlightMetric).toBe('3D Saigon Tower · Metro Train · X-Ray BIM');
+
+    expect(byId.get('aurelia-resort')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('aurelia-resort')?.ciBadge).toBe('166/166 CI');
+    expect(byId.get('aurelia-resort')?.highlightMetric).toBe('3D Phu Quoc Cove · Sunset Shader · 409 Lock');
+
+    expect(byId.get('pulse-pos-fnb')?.version).toBe('v5.0 · .NET 10');
+    expect(byId.get('pulse-pos-fnb')?.ciBadge).toBe('166/166 CI');
+    expect(byId.get('pulse-pos-fnb')?.highlightMetric).toBe('3D Roastery Floor · Flying KDS Arcs · Barista POV');
+
+    expect(byId.get('zenith-wealth-fintech')?.version).toBe('v5.0 · FastAPI');
+    expect(byId.get('zenith-wealth-fintech')?.ciBadge).toBe('154/154 CI');
+    expect(byId.get('zenith-wealth-fintech')?.highlightMetric).toBe('3D Swiss Frontier · GFC Deformer · 3D MC Fan');
+
+    expect(byId.get('kuro-omakase')?.version).toBe('v4.0 · .NET 10');
+    expect(byId.get('kuro-omakase')?.ciBadge).toBe('153/153 CI');
+    expect(byId.get('kuro-omakase')?.highlightMetric).toBe('3D Hinoki 14-Seat · Binchōtan Embers · Seat #7 POV');
   });
 
   it('verifies all 8 locally measured production API endpoints in VERIFIED_API_BENCHMARKS (HTTP 200, ordered P50/P95/P99)', () => {
@@ -252,19 +277,19 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(DEFAULT_ACCENT_PAPER).not.toBe(DEFAULT_ACCENT_OBSIDIAN);
   });
 
-  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v7 monorepos, 12 pro tools, 4,685 live CI) in AI Twin & JD Fit', () => {
+  it('surfaces v12.0 portfolio facts (29 live apps, 26/26 v3–v7 monorepos, 12 pro tools, 4,875 live CI) in AI Twin & JD Fit', () => {
     const portfolioAns = queryDigitalTwinLocal('Tell me about your 26 monorepos and live portfolio apps');
     expect(portfolioAns.id).toBe('live-flagships');
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
     expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools v2.5'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('4,685 Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('4,875 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('4,685 live CI tests');
+    expect(report.tailoredPitch).toContain('4,875 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {
