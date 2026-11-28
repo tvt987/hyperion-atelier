@@ -138,7 +138,7 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
       expect(m?.[1]).toBe(m?.[2]);
       return sum + Number(m?.[1] ?? 0);
     }, 0);
-    expect(totalShowcaseTests).toBe(4020);
+    expect(totalShowcaseTests).toBe(4217);
   });
 
   it('verifies Wave 1 masterwork upgrades across Velox, Meridian, Zenith, Verdict Graph & AegisPulse', () => {
@@ -221,13 +221,13 @@ describe('HYPERION ATELIER v5.0 — AI Twin RAG, JD Fit Matcher, Accent Engine &
     expect(portfolioAns.title).toContain('29 Live Production Web Apps');
     expect(portfolioAns.title).toContain('26/26 Monorepos');
     expect(portfolioAns.metrics.some((m) => m.includes('12 Free Pro Tools v2.5'))).toBe(true);
-    expect(portfolioAns.metrics.some((m) => m.includes('4,044 Live CI Tests'))).toBe(true);
+    expect(portfolioAns.metrics.some((m) => m.includes('4,241 Live CI Tests'))).toBe(true);
 
     const report = analyzeJdFit(SAMPLE_SENIOR_JD);
     expect(report.tailoredPitch).toContain('29 live web apps');
     expect(report.tailoredPitch).toContain('26/26 full-stack .NET 10 & FastAPI monorepos');
     expect(report.tailoredPitch).toContain('12 Free Pro Tools');
-    expect(report.tailoredPitch).toContain('4,044 live CI tests');
+    expect(report.tailoredPitch).toContain('4,241 live CI tests');
   });
 
   it('enforces zero UI emojis across all 28 flagship showcase entries', () => {
