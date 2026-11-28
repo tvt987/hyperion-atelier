@@ -1166,7 +1166,7 @@ export function App() {
       <footer className="relative z-10 py-8 pb-10 md:pb-24 px-5 sm:px-8 border-t border-[var(--hairline)]">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[var(--fg-muted)]">
           <span>© 2026 Truong Van Tinh · Ho Chi Minh City</span>
-          <span>29 Live Apps · 26/26 Full-Stack .NET 10 / FastAPI Monorepos (v3–v7 · 15 Three.js 3D) · 12 Free Pro Tools · 4,875 Live CI Tests · v12.0</span>
+          <span>29 Live Apps · 26/26 Full-Stack .NET 10 / FastAPI Monorepos (100% Master Interactive · 20 Three.js 3D) · 12 Free Pro Tools v3.0 · 5,043 Live CI Tests · v12.0</span>
         </div>
       </footer>
 

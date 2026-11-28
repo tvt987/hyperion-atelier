@@ -133,21 +133,21 @@ const TWIN_KNOWLEDGE_BASE: KnowledgeEntry[] = [
   },
   {
     id: 'live-flagships',
-    title: '29 Live Production Web Apps · 26/26 Monorepos (v3–v7) · 12 Free Pro Tools (4,875 Live CI)',
+    title: '29 Live Production Web Apps · 26/26 Monorepos (100% Master Interactive · 20 Three.js 3D) · 12 Free Pro Tools v3.0 (5,043 Live CI)',
     terms: [
       'flagship', 'project', 'portfolio', 'live', 'demo', 'maison', 'vera', 'atelier',
       'canvas', 'aether', 'nexus', 'lake', 'three', 'webgl', 'webgpu', 'duckdb', 'wasm', 'crdt', 'yjs', 'figma', '3d',
       'studio', 'store', 'pos', 'medspa', 'proptech', 'lumina', 'kinetix', 'pulsepos', 'order', 'buy',
       'tools', 'vietqr', 'payroll', 'resort', 'ev', 'velox', 'aurelia', 'solaris', 'kuro', 'vanguard', 'meridian', 'coda', 'veritas', 'nordic', 'zenith',
       'chronos', 'tourbillon', 'watch', 'helios', 'quant', 'orderbook', 'trading', 'aeroforge', 'factory', 'twin', 'robot', 'kinematics', 'fft',
-      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '4875', '4851', '5045', '12',
+      'orbitalflow', 'saas', 'fleetpulse', 'gis', 'medcore', 'ehr', 'fhir', 'monorepo', 'monorepos', '26', '29', '5043', '5019', '5213', '12',
     ],
-    metrics: ['29 Live Web Apps (21 Master Interactive · 15 Three.js 3D)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools v2.5 (95/95 CI)', '4,875 Live CI Tests (5,045 Total GitHub)'],
-    keywords: ['Meridian v5 (3D Port)', 'Kinetix v5 (3D Tower)', 'Aurelia v5 (3D Cove)', 'PulsePOS v5 (3D Cafe)', 'Zenith v5 (3D Frontier)', 'Kuro v4 (3D Hinoki)'],
+    metrics: ['29 Live Web Apps (26/26 Master Interactive · 20 Three.js 3D)', '18 .NET 10 + 8 FastAPI Backends', '12 Free Pro Tools v3.0 (107/107 CI)', '5,043 Live CI Tests (5,213 Total GitHub)'],
+    keywords: ['Lumina v5 (3D Laser)', 'CodaHR v5 (3D Globe)', 'Vanguard v4 (3D Athlete)', 'Veritas v4 (3D Waterfall)', 'Solaris v4 (3D Cloud)', 'Pro Tools v3 (ERD+OWASP)'],
     actions: [
-      { label: 'Meridian 3D Port v5.0 ↗', href: 'https://tvt987.github.io/meridian-logistics/', accent: true },
-      { label: 'Kinetix 3D Tower v5.0 ↗', href: 'https://tvt987.github.io/kinetix-proptech/' },
-      { label: 'Zenith 3D Frontier v5.0 ↗', href: 'https://tvt987.github.io/zenith-wealth-fintech/' },
+      { label: 'Lumina 3D Laser v5.0 ↗', href: 'https://tvt987.github.io/lumina-medspa/', accent: true },
+      { label: 'CodaHR 3D Globe v5.0 ↗', href: 'https://tvt987.github.io/coda-hr-payroll/' },
+      { label: 'Solaris 3D Cloud v4.0 ↗', href: 'https://tvt987.github.io/solaris-academy/' },
     ],
   },
 ];
@@ -320,7 +320,7 @@ export function analyzeJdFit(jdText: string): JdFitReport {
 
   const topSkillsText =
     matchedSkills.slice(0, 5).join(', ') || '.NET 10, Python/FastAPI, React 19, MCP/RAG';
-  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos at v3–v7 · 15 Three.js 3D apps), 12 Free Pro Tools, 4,875 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
+  const tailoredPitch = `Truong Van Tinh — ${fitScorePct}% Stack Match (${topSkillsText}). Production proof: 700+ retail stores (.NET 8/Dapper/Redis), 139,099 RPS CAS engine, 29 live web apps (26/26 full-stack .NET 10 & FastAPI monorepos · 100% Master Interactive · 20 Three.js 3D apps), 12 Free Pro Tools v3.0, 5,043 live CI tests (26/26 OpenAPI 3.1, 0 SAST findings). Remote B2B ($25–$45/hr, 4–6h US/EU/APAC overlap) · tinhkun102@gmail.com`;
 
   return {
     fitScorePct,
